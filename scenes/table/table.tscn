@@ -1,0 +1,69 @@
+[gd_scene format=3 uid="uid://6vvx8lbe4stq"]
+
+[ext_resource type="Texture2D" uid="uid://dobvo1pqegxwa" path="res://assets/background/balatro_background.jpg" id="1_ov72x"]
+[ext_resource type="Script" uid="uid://ugthjc2fmrll" path="res://scenes/table/table.gd" id="1_wpgb8"]
+[ext_resource type="PackedScene" uid="uid://cpsfq4niew1e7" path="res://scenes/cards/card.tscn" id="2_qxbf1"]
+[ext_resource type="Texture2D" uid="uid://clou8mgcdcvby" path="res://assets/cards/cardsLarge_tilemap_packed.png" id="3_0y6hh"]
+[ext_resource type="Texture2D" uid="uid://dx7lytm5ijdvx" path="res://assets/cards/mazo_especial.png" id="4_vd5qv"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0y6hh"]
+size = Vector2(40, 58)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vd5qv"]
+size = Vector2(40, 58)
+
+[node name="table" type="Node2D" unique_id=719587053]
+script = ExtResource("1_wpgb8")
+card_scene = ExtResource("2_qxbf1")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1762157097]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 864.0
+offset_bottom = 486.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_ov72x")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="mano_p1" type="Marker2D" parent="." unique_id=154113500]
+position = Vector2(300, 324)
+gizmo_extents = 6.3
+
+[node name="mano_p2" type="Marker2D" parent="." unique_id=549011302]
+position = Vector2(300, 162)
+
+[node name="zonaJuego_p1" type="Marker2D" parent="." unique_id=1282993710]
+position = Vector2(482, 243)
+
+[node name="zonaJuego_p2" type="Marker2D" parent="." unique_id=1385558279]
+position = Vector2(382, 243)
+
+[node name="mazoNormal" type="Area2D" parent="." unique_id=204766976]
+position = Vector2(302, 243)
+
+[node name="Sprite2D" type="Sprite2D" parent="mazoNormal" unique_id=341006356]
+texture = ExtResource("3_0y6hh")
+hframes = 14
+vframes = 4
+frame = 27
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="mazoNormal" unique_id=1416933828]
+shape = SubResource("RectangleShape2D_0y6hh")
+
+[node name="mazoEspecial" type="Area2D" parent="." unique_id=225839669]
+position = Vector2(562, 243)
+
+[node name="Sprite2D" type="Sprite2D" parent="mazoEspecial" unique_id=359631183]
+texture = ExtResource("4_vd5qv")
+hframes = 5
+frame = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="mazoEspecial" unique_id=612028028]
+position = Vector2(1, -2)
+shape = SubResource("RectangleShape2D_vd5qv")
+
+[connection signal="input_event" from="mazoNormal" to="." method="_on_mazo_normal_input_event"]
+[connection signal="input_event" from="mazoEspecial" to="." method="_on_mazo_especial_input_event"]

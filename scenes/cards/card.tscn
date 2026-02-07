@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://cpsfq4niew1e7"]
+
+[ext_resource type="Script" uid="uid://b47gjrqyind0r" path="res://scenes/cards/card.gd" id="1_0qqw3"]
+[ext_resource type="Texture2D" uid="uid://clou8mgcdcvby" path="res://assets/cards/cardsLarge_tilemap_packed.png" id="2_jl6rh"]
+[ext_resource type="Texture2D" uid="uid://dx7lytm5ijdvx" path="res://assets/cards/mazo_especial.png" id="3_jl6rh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_73nwn"]
+size = Vector2(40, 56)
+
+[node name="card" type="Area2D" unique_id=2039611704]
+script = ExtResource("1_0qqw3")
+textura_poker = ExtResource("2_jl6rh")
+textura_especial = ExtResource("3_jl6rh")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=377275874]
+texture = ExtResource("2_jl6rh")
+hframes = 14
+vframes = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=609577973]
+position = Vector2(-1, 0)
+shape = SubResource("RectangleShape2D_73nwn")
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]
