@@ -3,34 +3,40 @@ extends Node2D
 
 @onready var pos_jugador = $mano_p1
 @onready var pos_rival = $mano_p2
+@onready var mazo : Array[int]
 var cartas_en_mano_jugador = 0
 var cartas_en_mano_rival = 0
 
 func _ready():
 	await get_tree().process_frame
+	randomize()
+	crear_mazo()
 	repartir_mano_inicial()
+	
+func crear_mazo():
+	for palo in range(4):
+		for valor in range(13):
+				var id = palo * 13 + valor
+				print(id)
+				mazo.append(id)
+	mazo.shuffle()
 
 func repartir_mano_inicial():
 	cartas_en_mano_jugador = 0
 	cartas_en_mano_rival = 0
-	
 	for i in range(4):
-		crear_carta_normal(pos_jugador, true, i)
-		
+		crear_carta_normal(pos_jugador, 1, i)
 	for i in range(4):
-		crear_carta_normal(pos_rival, false, i)
+		crear_carta_normal(pos_rival, 2, i)
 
-func crear_carta_normal(marker: Marker2D, es_jugador: bool, indice_posicion: int):
+func crear_carta_normal(marker: Marker2D, es_jugador: int, indice_posicion: int):
 	if card_scene == null:
 		return
 
 	var nueva_carta = card_scene.instantiate()
 	add_child(nueva_carta)
 	
-	var palo = randi() % 4   
-	var valor = randi() % 13 
-	
-	nueva_carta.setup_card(palo, valor, es_jugador)
+	nueva_carta.setup_card(mazo.pop_back(), es_jugador)
 	colocar_carta(nueva_carta, marker, indice_posicion)
 	if es_jugador: cartas_en_mano_jugador += 1
 	else: cartas_en_mano_rival += 1

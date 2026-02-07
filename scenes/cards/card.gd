@@ -12,22 +12,25 @@ var efecto_especial : int = Efecto.NINGUNO
 @export var suit : int = 0
 @export var value : int = 0
 @export var face_up : bool = false
-var controlled_by_player : bool = true 
+var controlled_by_player : int = 0 #0 no es de ningun jugador, 1 primer jugador, 2 segundo jugador
 
 @onready var sprite = $Sprite2D
 
 func _ready():
 	update_visuals()
 
-func setup_card(p_suit: int, p_value: int, p_is_player: bool):
+func setup_card(p_id: int, p_is_player: int):
 	tipo_carta = Tipo.NORMAL
-	suit = p_suit
-	value = p_value
+	suit = p_id / 13
+	value = p_id % 13
 	controlled_by_player = p_is_player
-	face_up = p_is_player 
+	if p_is_player == 2:
+		face_up = 0
+	else:
+		face_up = 1
 	update_visuals()
 
-func setup_quantum(p_efecto: int, p_is_player: bool):
+func setup_quantum(p_efecto: int, p_is_player: int):
 	tipo_carta = Tipo.QUANTUM
 	efecto_especial = p_efecto
 	controlled_by_player = p_is_player
