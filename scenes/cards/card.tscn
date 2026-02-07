@@ -22,3 +22,5 @@ position = Vector2(-1, 0)
 shape = SubResource("RectangleShape2D_73nwn")
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

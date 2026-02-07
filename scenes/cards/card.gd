@@ -1,4 +1,5 @@
 extends Area2D
+class_name Carta
 
 enum Tipo { NORMAL, QUANTUM }
 enum Efecto { NINGUNO, ENTRELAZADO, SUPERPOSICION, AROUND_WORLD, COUNTER }
@@ -16,7 +17,11 @@ var controlled_by_player : int = 0 #0 no es de ningun jugador, 1 primer jugador,
 
 @onready var sprite = $Sprite2D
 
+signal hovered
+signal hovered_off
+
 func _ready():
+	get_parent().connect_card_signals(self)
 	update_visuals()
 
 func setup_card(p_id: int, p_is_player: int):
@@ -68,9 +73,18 @@ func update_visuals():
 
 func _on_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		if not controlled_by_player: return
+		if controlled_by_player != 1: return
 		flip_card()
+
 
 func flip_card():
 	face_up = !face_up
 	update_visuals()
+
+
+func _on_mouse_entered() -> void:
+	emit_signal("hovered", self)
+
+
+func _on_mouse_exited() -> void:
+	emit_signal("hovered_off", self)
