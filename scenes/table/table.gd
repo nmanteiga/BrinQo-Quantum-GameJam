@@ -70,7 +70,7 @@ func robar_carta_cuantica(es_jugador: bool):
 		cartas_en_mano_rival += 1
 
 func colocar_carta(carta, marker, indice):
-	var separacion = Vector2(90 * indice, 0)
+	var separacion = Vector2(150 * indice, 0)
 	carta.position = marker.position + separacion
 	
 func check_carta():
@@ -107,11 +107,11 @@ func on_hovered_off_card(carta):
 	
 func highlight_card(carta, hovered):
 	if hovered:
-		carta.scale = Vector2(1.2, 1.2)
+		carta.scale = carta.base_scale * 1.2
 		carta.z_index = 2
 	else:
 		#al deshoverear deshacemos el aumento de tamaño
-		carta.scale = Vector2(1, 1)
+		carta.scale = carta.base_scale
 		carta.z_index = 1
 
 func _input(event):

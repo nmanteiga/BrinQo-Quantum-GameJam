@@ -20,13 +20,27 @@ var controlled_by_player : int = 0 #0 no es de ningun jugador, 1 primer jugador,
 signal hovered
 signal hovered_off
 
+@export var card_scale : float = 0.2
+var base_scale : Vector2
+
 func _ready():
+	base_scale = Vector2(card_scale, card_scale)
+	scale = base_scale
+	# Adjust collision to match sprite after scaling
+	adjust_collision_shape()
 	get_parent().connect_card_signals(self)
 	update_visuals()
 
+func adjust_collision_shape():
+	var collision = $CollisionShape2D
+	if collision and collision.shape is RectangleShape2D and sprite.texture:
+		var card_width = sprite.texture.get_width() / sprite.hframes
+		var card_height = sprite.texture.get_height() / sprite.vframes
+		collision.shape.size = Vector2(card_width, card_height)
+
 func setup_card(p_id: int, p_is_player: int):
 	tipo_carta = Tipo.NORMAL
-	suit = p_id / 13
+	suit = p_id / 13 + 1
 	value = p_id % 13
 	controlled_by_player = p_is_player
 	if p_is_player == 2:
@@ -45,13 +59,13 @@ func setup_quantum(p_efecto: int, p_is_player: int):
 func update_visuals():
 	if tipo_carta == Tipo.NORMAL:
 		sprite.texture = textura_poker
-		sprite.hframes = 14
-		sprite.vframes = 4
+		sprite.hframes = 13
+		sprite.vframes = 5
 		
 		if face_up:
-			sprite.frame = (suit * 14) + value
+			sprite.frame = suit * 13 + value
 		else:
-			sprite.frame = 27 
+			sprite.frame = 0
 	
 	else:
 		sprite.texture = textura_especial
@@ -74,7 +88,7 @@ func update_visuals():
 func _on_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		if controlled_by_player != 1: return
-		flip_card()
+		#flip_card()
 
 
 func flip_card():
