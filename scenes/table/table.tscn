@@ -18,7 +18,22 @@ size = Vector2(40, 58)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vd5qv"]
 size = Vector2(40, 58)
 
+[sub_resource type="GDScript" id="GDScript_wpgb8"]
+script/source = "extends Node2D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wpgb8"]
+size = Vector2(192, 256)
 
 [node name="table" type="Node2D" unique_id=719587053]
 script = ExtResource("1_wpgb8")
@@ -44,9 +59,11 @@ gizmo_extents = 6.3
 position = Vector2(636, 136)
 
 [node name="zonaJuego_p1" type="Marker2D" parent="." unique_id=1282993710]
+visible = false
 position = Vector2(1220, 529)
 
 [node name="zonaJuego_p2" type="Marker2D" parent="." unique_id=1385558279]
+visible = false
 position = Vector2(900, 529)
 
 [node name="mazoNormal" type="Area2D" parent="." unique_id=204766976]
@@ -74,9 +91,12 @@ position = Vector2(1, -2)
 shape = SubResource("RectangleShape2D_vd5qv")
 
 [node name="Descartes1" type="Node2D" parent="." unique_id=1941461803]
-position = Vector2(829, 529)
+position = Vector2(832, 576)
+script = SubResource("GDScript_wpgb8")
 
 [node name="Area2D" type="Area2D" parent="Descartes1" unique_id=343982799]
+collision_layer = 2
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Descartes1/Area2D" unique_id=998354146]
 shape = SubResource("RectangleShape2D_wpgb8")

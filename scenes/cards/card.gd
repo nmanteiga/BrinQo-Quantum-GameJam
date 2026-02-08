@@ -14,6 +14,7 @@ var efecto_especial : int = Efecto.NINGUNO
 @export var value : int = 0
 @export var face_up : bool = false
 var controlled_by_player : int = 0 #0 no es de ningun jugador, 1 primer jugador, 2 segundo jugador
+var slot_index : int = 0 # Position index in hand
 
 @onready var sprite = $Sprite2D
 
