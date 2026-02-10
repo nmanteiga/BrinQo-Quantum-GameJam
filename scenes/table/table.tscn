@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://ugthjc2fmrll" path="res://scenes/table/table.gd" id="1_wpgb8"]
 [ext_resource type="PackedScene" uid="uid://cpsfq4niew1e7" path="res://scenes/cards/card.tscn" id="2_qxbf1"]
-[ext_resource type="Texture2D" uid="uid://clou8mgcdcvby" path="res://assets/cards/cardsLarge_tilemap_packed.png" id="3_0y6hh"]
+[ext_resource type="Texture2D" uid="uid://ossgsfcy48s1" path="res://assets/cards/standardDeck_v01.png" id="3_wpgb8"]
 [ext_resource type="Texture2D" uid="uid://dx7lytm5ijdvx" path="res://assets/cards/mazo_especial.png" id="4_vd5qv"]
 
 [sub_resource type="Gradient" id="Gradient_wpgb8"]
@@ -11,9 +11,6 @@ colors = PackedColorArray(0, 0.09019608, 0.1254902, 1, 0.07582194, 0.20809513, 0
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_0y6hh"]
 gradient = SubResource("Gradient_wpgb8")
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_vd5qv"]
-size = Vector2(40, 58)
 
 [sub_resource type="GDScript" id="GDScript_wpgb8"]
 script/source = "extends Node2D
@@ -43,8 +40,10 @@ card_scene = ExtResource("2_qxbf1")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 2098.0
-offset_bottom = 1231.0
+offset_left = 16.0
+offset_top = 11.0
+offset_right = 2114.0
+offset_bottom = 1242.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("GradientTexture2D_0y6hh")
@@ -68,22 +67,21 @@ position = Vector2(832, 575)
 position = Vector2(639, 520)
 
 [node name="Sprite2D" type="Sprite2D" parent="mazoNormal" unique_id=341006356]
-texture = ExtResource("3_0y6hh")
-hframes = 14
-vframes = 4
-frame = 27
+position = Vector2(-1.5258789e-05, -1.9999886)
+scale = Vector2(0.14506578, 0.14109142)
+texture = ExtResource("3_wpgb8")
+hframes = 13
+vframes = 5
 
 [node name="mazoEspecial" type="Area2D" parent="." unique_id=225839669]
 position = Vector2(1300, 526)
 
 [node name="Sprite2D" type="Sprite2D" parent="mazoEspecial" unique_id=359631183]
+position = Vector2(-0.5000167, -6.499992)
+scale = Vector2(2.269841, 2.3088236)
 texture = ExtResource("4_vd5qv")
 hframes = 5
 frame = 4
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="mazoEspecial" unique_id=612028028]
-position = Vector2(1, -2)
-shape = SubResource("RectangleShape2D_vd5qv")
 
 [node name="Descartes1" type="Node2D" parent="." unique_id=1941461803]
 position = Vector2(832, 576)
@@ -109,6 +107,12 @@ shape = SubResource("RectangleShape2D_tg5vf")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=807943530]
 
+[node name="BotonDebug" type="Button" parent="CanvasLayer" unique_id=291840358]
+offset_left = 1447.0
+offset_top = 753.0
+offset_right = 1647.0
+offset_bottom = 875.0
+
 [node name="LabelRonda" type="Label" parent="CanvasLayer" unique_id=674461263]
 anchors_preset = -1
 anchor_left = 0.78000003
@@ -131,6 +135,7 @@ offset_right = -0.44006348
 offset_bottom = -0.2401123
 
 [node name="PanelGameOver" type="Panel" parent="CanvasLayer" unique_id=2028273790]
+visible = false
 anchors_preset = -1
 anchor_left = 0.23700002
 anchor_top = 0.245
