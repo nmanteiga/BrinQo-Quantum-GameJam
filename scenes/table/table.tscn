@@ -102,6 +102,8 @@ shape = SubResource("RectangleShape2D_wpgb8")
 
 [node name="Area2D" type="Area2D" parent="Descartes2" unique_id=1099856059]
 position = Vector2(831, 575)
+collision_layer = 2
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Descartes2/Area2D" unique_id=2147226341]
 position = Vector2(2, 0)

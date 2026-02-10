@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://dnvwqyu3hy5ot"]
+
+[ext_resource type="Script" uid="uid://bw8yqxg5qqd3p" path="res://scenes/multiplayer/multiplayer.gd" id="1_7jitx"]
+[ext_resource type="PackedScene" uid="uid://6vvx8lbe4stq" path="res://scenes/table/table.tscn" id="2_player_field"]
+
+[node name="Main" type="Node2D" unique_id=466695763]
+script = ExtResource("1_7jitx")
+player_field_scene = ExtResource("2_player_field")
+
+[node name="Host" type="Button" parent="." unique_id=1884781594]
+offset_left = 400.0
+offset_top = 250.0
+offset_right = 500.0
+offset_bottom = 300.0
+text = "Host"
+
+[node name="Join" type="Button" parent="." unique_id=136535068]
+offset_left = 400.0
+offset_top = 320.0
+offset_right = 500.0
+offset_bottom = 370.0
+text = "Join"
+
+[connection signal="pressed" from="Host" to="." method="_on_host_pressed"]
+[connection signal="pressed" from="Join" to="." method="_on_join_pressed"]
