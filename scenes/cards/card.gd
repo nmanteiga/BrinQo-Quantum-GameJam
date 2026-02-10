@@ -24,7 +24,7 @@ var es_superposicion : bool = false
 signal hovered
 signal hovered_off
 
-@export var card_scale : float = 0.2
+@export var card_scale : float = 0.25
 @export var tilt_strength : float = 15.0  # Maximum rotation angle in degrees
 var base_scale : Vector2
 var is_mouse_hovering : bool = false
@@ -177,6 +177,7 @@ func aplicar_efecto_visual_cuantico(color: Color):
 func _on_input_event(viewport, event, shape_idx): pass 
 
 func _on_mouse_entered() -> void:
+	print("HOVER WORKS!")
 	is_mouse_hovering = true
 	emit_signal("hovered", self)
 

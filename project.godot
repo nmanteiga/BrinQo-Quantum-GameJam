@@ -20,6 +20,11 @@ window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/size/mode=3
 window/stretch/mode="canvas_items"
+window/stretch/scale_mode="integer"
+
+[gui]
+
+theme/default_font_generate_mipmaps=true
 
 [physics]
 
@@ -28,3 +33,8 @@ window/stretch/mode="canvas_items"
 [rendering]
 
 rendering_device/driver.windows="d3d12"
+textures/default_filters/use_nearest_mipmap_filter=true
+anti_aliasing/screen_space_roughness_limiter/enabled=false
+anti_aliasing/screen_space_roughness_limiter/amount=2.0199999999999996
+textures/default_filters/texture_mipmap_bias=2.0
+anti_aliasing/quality/screen_space_aa=1

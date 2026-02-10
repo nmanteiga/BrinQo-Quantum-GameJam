@@ -97,7 +97,7 @@ func crear_carta_normal(marker: Marker2D, es_jugador: int):
 	colocar_carta(nueva_carta, marker, idx)
 
 func colocar_carta(carta, marker, idx):
-	var destino = marker.position + Vector2(150 * idx, 0)
+	var destino = marker.position + Vector2(208 * idx, 0)
 	carta.z_index = 10 
 	var tween = create_tween()
 	tween.tween_property(carta, "position", destino, 0.5).set_trans(Tween.TRANS_CUBIC)

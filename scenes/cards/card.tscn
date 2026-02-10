@@ -15,10 +15,14 @@ shader_parameter/x_rot = 0.0
 shader_parameter/inset = 0.0
 
 [node name="card" type="Area2D" unique_id=2039611704]
+input_pickable = true
+monitorable = true
+monitoring = true
 script = ExtResource("1_0qqw3")
 textura_especial = ExtResource("3_jl6rh")
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=377275874]
+texture_filter = 6
 material = SubResource("ShaderMaterial_mo7yc")
 offset_left = -380.0
 offset_top = -536.0
@@ -26,10 +30,10 @@ offset_right = 380.0
 offset_bottom = 536.0
 texture = ExtResource("4_1q37b")
 expand_mode = 1
-stretch_mode = 5
+stretch_mode = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=609577973]
-position = Vector2(6.5, 0)
+position = Vector2(3, -6.5)
 shape = ExtResource("4_73nwn")
 one_way_collision_margin = 0.0
 

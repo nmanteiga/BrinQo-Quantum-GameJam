@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://ugthjc2fmrll" path="res://scenes/table/table.gd" id="1_wpgb8"]
 [ext_resource type="PackedScene" uid="uid://cpsfq4niew1e7" path="res://scenes/cards/card.tscn" id="2_qxbf1"]
 [ext_resource type="Texture2D" uid="uid://c6d4ofta0awia" path="res://assets/background/table_v02.png" id="3_0y6hh"]
-[ext_resource type="Texture2D" uid="uid://dimgb1q2tuhcl" path="res://assets/cards/back/back_v01.png" id="3_wpgb8"]
+[ext_resource type="Texture2D" uid="uid://dx6oi56fp0wuk" path="res://assets/cards/back/back_v09.png" id="4_0y6hh"]
 [ext_resource type="Texture2D" uid="uid://dx7lytm5ijdvx" path="res://assets/cards/mazo_especial.png" id="4_vd5qv"]
 
 [sub_resource type="GDScript" id="GDScript_wpgb8"]
@@ -21,10 +21,10 @@ func _process(delta: float) -> void:
 "
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wpgb8"]
-size = Vector2(193, 256)
+size = Vector2(232.5, 312)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tg5vf"]
-size = Vector2(188, 254)
+size = Vector2(238, 311)
 
 [node name="table" type="Node2D" unique_id=719587053]
 script = ExtResource("1_wpgb8")
@@ -41,26 +41,29 @@ grow_vertical = 2
 texture = ExtResource("3_0y6hh")
 
 [node name="mano_p1" type="Marker2D" parent="." unique_id=154113500]
-position = Vector2(576, 792)
+position = Vector2(640, 880)
 gizmo_extents = 6.3
 
 [node name="mano_p2" type="Marker2D" parent="." unique_id=549011302]
-position = Vector2(636, 136)
+position = Vector2(640, 192)
 
 [node name="zonaJuego_p1" type="Marker2D" parent="." unique_id=1282993710]
-position = Vector2(1100, 570)
+position = Vector2(1100, 537)
 
 [node name="zonaJuego_p2" type="Marker2D" parent="." unique_id=1385558279]
-position = Vector2(832, 575)
+position = Vector2(810, 536)
 
 [node name="mazoNormal" type="Area2D" parent="." unique_id=204766976]
-position = Vector2(639, 520)
+position = Vector2(320, 536)
 
 [node name="TextureRect" type="TextureRect" parent="mazoNormal" unique_id=120631648]
-offset_right = 40.0
-offset_bottom = 40.0
-texture = ExtResource("3_wpgb8")
-expand_mode = 4
+offset_left = -40.0
+offset_top = -136.0
+offset_right = 184.0
+offset_bottom = 144.0
+texture = ExtResource("4_0y6hh")
+expand_mode = 1
+stretch_mode = 4
 
 [node name="mazoEspecial" type="Area2D" parent="." unique_id=225839669]
 position = Vector2(1300, 526)
@@ -82,7 +85,7 @@ collision_layer = 2
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Descartes1/Area2D" unique_id=998354146]
-position = Vector2(-2, 1)
+position = Vector2(-2.25, -31)
 shape = SubResource("RectangleShape2D_wpgb8")
 
 [node name="Descartes2" type="Node2D" parent="." unique_id=1464561381]
@@ -91,7 +94,7 @@ shape = SubResource("RectangleShape2D_wpgb8")
 position = Vector2(831, 575)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Descartes2/Area2D" unique_id=2147226341]
-position = Vector2(2, 0)
+position = Vector2(-22, -34.5)
 shape = SubResource("RectangleShape2D_tg5vf")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=807943530]
