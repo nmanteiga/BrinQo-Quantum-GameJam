@@ -12,9 +12,6 @@ colors = PackedColorArray(0, 0.09019608, 0.1254902, 1, 0.07582194, 0.20809513, 0
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_0y6hh"]
 gradient = SubResource("Gradient_wpgb8")
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_0y6hh"]
-size = Vector2(40, 58)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vd5qv"]
 size = Vector2(40, 58)
 
@@ -33,7 +30,10 @@ func _process(delta: float) -> void:
 "
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wpgb8"]
-size = Vector2(192, 256)
+size = Vector2(193, 256)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tg5vf"]
+size = Vector2(188, 254)
 
 [node name="table" type="Node2D" unique_id=719587053]
 script = ExtResource("1_wpgb8")
@@ -59,12 +59,10 @@ gizmo_extents = 6.3
 position = Vector2(636, 136)
 
 [node name="zonaJuego_p1" type="Marker2D" parent="." unique_id=1282993710]
-visible = false
-position = Vector2(1220, 529)
+position = Vector2(1100, 570)
 
 [node name="zonaJuego_p2" type="Marker2D" parent="." unique_id=1385558279]
-visible = false
-position = Vector2(900, 529)
+position = Vector2(832, 575)
 
 [node name="mazoNormal" type="Area2D" parent="." unique_id=204766976]
 position = Vector2(639, 520)
@@ -75,11 +73,8 @@ hframes = 14
 vframes = 4
 frame = 27
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="mazoNormal" unique_id=1416933828]
-shape = SubResource("RectangleShape2D_0y6hh")
-
 [node name="mazoEspecial" type="Area2D" parent="." unique_id=225839669]
-position = Vector2(1480, 526)
+position = Vector2(1300, 526)
 
 [node name="Sprite2D" type="Sprite2D" parent="mazoEspecial" unique_id=359631183]
 texture = ExtResource("4_vd5qv")
@@ -95,11 +90,67 @@ position = Vector2(832, 576)
 script = SubResource("GDScript_wpgb8")
 
 [node name="Area2D" type="Area2D" parent="Descartes1" unique_id=343982799]
+position = Vector2(270, -5)
 collision_layer = 2
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Descartes1/Area2D" unique_id=998354146]
+position = Vector2(-2, 1)
 shape = SubResource("RectangleShape2D_wpgb8")
+
+[node name="Descartes2" type="Node2D" parent="." unique_id=1464561381]
+
+[node name="Area2D" type="Area2D" parent="Descartes2" unique_id=1099856059]
+position = Vector2(831, 575)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Descartes2/Area2D" unique_id=2147226341]
+position = Vector2(2, 0)
+shape = SubResource("RectangleShape2D_tg5vf")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=807943530]
+
+[node name="LabelRonda" type="Label" parent="CanvasLayer" unique_id=674461263]
+anchors_preset = -1
+anchor_left = 0.78000003
+anchor_right = 1.001
+anchor_bottom = 0.16800001
+offset_left = -0.60009766
+offset_top = -2.0
+offset_right = -0.92004395
+offset_bottom = -0.4400177
+
+[node name="BotonPlantarse" type="Button" parent="CanvasLayer" unique_id=1968019780]
+anchors_preset = -1
+anchor_left = 0.754
+anchor_top = 0.83800006
+anchor_right = 0.85700005
+anchor_bottom = 0.95300007
+offset_left = -0.6800537
+offset_top = -0.040039063
+offset_right = -0.44006348
+offset_bottom = -0.2401123
+
+[node name="PanelGameOver" type="Panel" parent="CanvasLayer" unique_id=2028273790]
+anchors_preset = -1
+anchor_left = 0.23700002
+anchor_top = 0.245
+anchor_right = 0.81000006
+anchor_bottom = 0.68200004
+offset_left = -0.040039063
+offset_top = 0.3999939
+offset_right = 0.79992676
+offset_bottom = 0.4399414
+
+[node name="LabelResultado" type="Label" parent="CanvasLayer/PanelGameOver" unique_id=1224346142]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.845
+anchor_right = 0.998
+anchor_bottom = 1.0270001
+offset_left = 8.0
+offset_top = -0.13000488
+offset_right = 0.20202637
+offset_bottom = 0.041931152
 
 [connection signal="input_event" from="mazoNormal" to="." method="_on_mazo_normal_input_event"]
 [connection signal="input_event" from="mazoEspecial" to="." method="_on_mazo_especial_input_event"]
