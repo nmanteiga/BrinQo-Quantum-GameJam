@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://ugthjc2fmrll" path="res://scenes/table/table.gd" id="1_wpgb8"]
 [ext_resource type="PackedScene" uid="uid://cpsfq4niew1e7" path="res://scenes/cards/card.tscn" id="2_qxbf1"]
-[ext_resource type="Texture2D" uid="uid://ossgsfcy48s1" path="res://assets/cards/standardDeck_v01.png" id="3_wpgb8"]
+[ext_resource type="Texture2D" uid="uid://dimgb1q2tuhcl" path="res://assets/cards/back/back_v01.png" id="3_wpgb8"]
 [ext_resource type="Texture2D" uid="uid://dx7lytm5ijdvx" path="res://assets/cards/mazo_especial.png" id="4_vd5qv"]
 
 [sub_resource type="Gradient" id="Gradient_wpgb8"]
@@ -66,12 +66,11 @@ position = Vector2(832, 575)
 [node name="mazoNormal" type="Area2D" parent="." unique_id=204766976]
 position = Vector2(639, 520)
 
-[node name="Sprite2D" type="Sprite2D" parent="mazoNormal" unique_id=341006356]
-position = Vector2(-1.5258789e-05, -1.9999886)
-scale = Vector2(0.14506578, 0.14109142)
+[node name="TextureRect" type="TextureRect" parent="mazoNormal" unique_id=120631648]
+offset_right = 40.0
+offset_bottom = 40.0
 texture = ExtResource("3_wpgb8")
-hframes = 13
-vframes = 5
+expand_mode = 4
 
 [node name="mazoEspecial" type="Area2D" parent="." unique_id=225839669]
 position = Vector2(1300, 526)

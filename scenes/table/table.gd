@@ -136,15 +136,17 @@ func resolver_ronda():
 	if fase_actual == Fase.GAME_OVER: return
 	
 	if carta_jugada_p1: 
-		carta_jugada_p1.face_up = true
+		carta_jugada_p1.face_up = false
 		if carta_jugada_p1.es_superposicion: colapsar_superposicion(carta_jugada_p1) 
 		resolver_entrelazamiento(carta_jugada_p1) 
-		carta_jugada_p1.update_visuals()
+		#carta_jugada_p1.update_visuals()
+		carta_jugada_p1.flip_card()
 	if carta_jugada_p2: 
-		carta_jugada_p2.face_up = true
+		carta_jugada_p2.face_up = false
 		if carta_jugada_p2.es_superposicion: colapsar_superposicion(carta_jugada_p2)
 		resolver_entrelazamiento(carta_jugada_p2)
-		carta_jugada_p2.update_visuals()
+		#carta_jugada_p2.update_visuals()
+		carta_jugada_p2.flip_card()
 	
 	await get_tree().create_timer(2.0).timeout 
 	if fase_actual == Fase.GAME_OVER: return
@@ -451,13 +453,15 @@ func ia_efecto_superposicion():
 
 # UTILS
 func activar_vista_temporal(c):
-	mirando_carta = true; cartas_vistas_ronda += 1; c.face_up = true
+	mirando_carta = true; cartas_vistas_ronda += 1; c.face_up = false
 	resolver_entrelazamiento(c); if c.es_superposicion: colapsar_superposicion(c)
-	c.update_visuals()
-	var t = create_tween(); t.tween_property(c, "scale", c.base_scale * 1.2, 0.2)
+	c.flip_card()
+	#c.update_visuals()
+	#var t = create_tween(); t.tween_property(c, "scale", c.base_scale * 1.2, 0.2)
 	await get_tree().create_timer(2).timeout
-	c.face_up = false; c.update_visuals()
-	t = create_tween(); t.tween_property(c, "scale", c.base_scale, 0.2)
+	#c.face_up = false; c.update_visuals()
+	#t = create_tween(); t.tween_property(c, "scale", c.base_scale, 0.2)
+	c.flip_card()
 	animacion_ia_mirando()
 
 func animacion_ia_mirando():
