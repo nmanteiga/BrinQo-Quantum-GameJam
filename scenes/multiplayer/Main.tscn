@@ -7,6 +7,15 @@
 script = ExtResource("1_7jitx")
 player_field_scene = ExtResource("2_player_field")
 
+[node name="IPInput" type="LineEdit" parent="." unique_id=1234567890]
+offset_left = 400.0
+offset_top = 200.0
+offset_right = 600.0
+offset_bottom = 230.0
+placeholder_text = "Server IP (default: localhost)"
+text = "localhost"
+alignment = 1
+
 [node name="Host" type="Button" parent="." unique_id=1884781594]
 offset_left = 400.0
 offset_top = 250.0

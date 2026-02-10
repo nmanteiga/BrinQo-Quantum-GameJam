@@ -1,12 +1,13 @@
 extends Node2D
 
 const PORT = 42069
-const SERVER_ADDRESS = "localhost"
+const DEFAULT_SERVER_ADDRESS = "localhost"
 
 var peer = ENetMultiplayerPeer.new()
 var local_player_id = 1
 var players_ready = {}
 @export var player_field_scene : PackedScene
+@onready var ip_input = $IPInput
 
 func _on_host_pressed() -> void:
 	disable_buttons()
@@ -25,7 +26,14 @@ func _on_host_pressed() -> void:
 func _on_join_pressed() -> void:
 	disable_buttons()
 	local_player_id = 2
-	peer.create_client(SERVER_ADDRESS, PORT)
+	
+	# Get IP from input field, use default if empty
+	var server_address = ip_input.text.strip_edges()
+	if server_address.is_empty():
+		server_address = DEFAULT_SERVER_ADDRESS
+	
+	print("Connecting to: ", server_address)
+	peer.create_client(server_address, PORT)
 	
 	multiplayer.multiplayer_peer = peer
 	
@@ -74,3 +82,5 @@ func disable_buttons():
 	$Host.visible = false
 	$Join.disabled = true
 	$Join.visible = false
+	ip_input.visible = false
+	ip_input.editable = false
