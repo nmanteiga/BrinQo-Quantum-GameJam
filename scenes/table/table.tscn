@@ -2,15 +2,9 @@
 
 [ext_resource type="Script" uid="uid://ugthjc2fmrll" path="res://scenes/table/table.gd" id="1_wpgb8"]
 [ext_resource type="PackedScene" uid="uid://cpsfq4niew1e7" path="res://scenes/cards/card.tscn" id="2_qxbf1"]
+[ext_resource type="Texture2D" uid="uid://c6d4ofta0awia" path="res://assets/background/table_v02.png" id="3_0y6hh"]
 [ext_resource type="Texture2D" uid="uid://dimgb1q2tuhcl" path="res://assets/cards/back/back_v01.png" id="3_wpgb8"]
 [ext_resource type="Texture2D" uid="uid://dx7lytm5ijdvx" path="res://assets/cards/mazo_especial.png" id="4_vd5qv"]
-
-[sub_resource type="Gradient" id="Gradient_wpgb8"]
-offsets = PackedFloat32Array(0, 0.9819277)
-colors = PackedColorArray(0, 0.09019608, 0.1254902, 1, 0.07582194, 0.20809513, 0.23577589, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_0y6hh"]
-gradient = SubResource("Gradient_wpgb8")
 
 [sub_resource type="GDScript" id="GDScript_wpgb8"]
 script/source = "extends Node2D
@@ -40,18 +34,14 @@ card_scene = ExtResource("2_qxbf1")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 16.0
-offset_top = 11.0
-offset_right = 2114.0
-offset_bottom = 1242.0
+offset_right = 1920.0
+offset_bottom = 1080.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = SubResource("GradientTexture2D_0y6hh")
-expand_mode = 1
-stretch_mode = 6
+texture = ExtResource("3_0y6hh")
 
 [node name="mano_p1" type="Marker2D" parent="." unique_id=154113500]
-position = Vector2(639, 977)
+position = Vector2(576, 792)
 gizmo_extents = 6.3
 
 [node name="mano_p2" type="Marker2D" parent="." unique_id=549011302]
