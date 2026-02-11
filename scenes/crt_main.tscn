@@ -17,10 +17,10 @@ shader_parameter/color_offset = 0.5
 shader_parameter/mask_brightness = 0.7630000362425
 shader_parameter/aspect = 0.8450000163875
 
-[node name="Node2D" type="Node2D" unique_id=1314590785]
+[node name="Node2D" type="Node2D" unique_id=1548486533]
 script = ExtResource("3_crt_script")
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=1624309165]
+[node name="ColorRect" type="ColorRect" parent="." unique_id=320973870]
 material = SubResource("ShaderMaterial_hw6kw")
 custom_minimum_size = Vector2(1920, 1080)
 anchors_preset = 15
@@ -34,17 +34,16 @@ mouse_filter = 2
 mouse_behavior_recursive = 2
 mouse_force_pass_scroll_events = false
 
-[node name="SubViewport" type="SubViewport" parent="." unique_id=22388736]
+[node name="SubViewport" type="SubViewport" parent="." unique_id=228006118]
 handle_input_locally = false
 audio_listener_enable_2d = true
 size = Vector2i(1920, 1080)
 
-[node name="table" parent="SubViewport" unique_id=719587053 instance=ExtResource("1_o7dqw")]
+[node name="table" parent="SubViewport" unique_id=12726856 instance=ExtResource("1_o7dqw")]
 
-[node name="UILayer" type="CanvasLayer" parent="." unique_id=1401482467]
-process_mode = 3
+[node name="UILayer" type="CanvasLayer" parent="SubViewport" unique_id=1152309234]
 
-[node name="HelpButton" type="Button" parent="UILayer" unique_id=694688173]
+[node name="HelpButton" type="Button" parent="SubViewport/UILayer" unique_id=1594181890]
 offset_left = 20.0
 offset_top = 20.0
 offset_right = 140.0
@@ -52,7 +51,7 @@ offset_bottom = 70.0
 theme_override_font_sizes/font_size = 24
 text = "Help"
 
-[node name="HelpOverlay" type="Panel" parent="UILayer" unique_id=501421736]
+[node name="HelpOverlay" type="Panel" parent="SubViewport/UILayer" unique_id=1351460865]
 visible = false
 anchors_preset = 15
 anchor_right = 1.0
@@ -60,16 +59,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ColorRect" type="ColorRect" parent="UILayer/HelpOverlay" unique_id=404691923]
-layout_mode = 0
+[node name="ColorRect" type="ColorRect" parent="SubViewport/UILayer/HelpOverlay" unique_id=921474725]
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.8)
 
-[node name="MarginContainer" type="MarginContainer" parent="UILayer/HelpOverlay" unique_id=33913499]
-layout_mode = 0
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/UILayer/HelpOverlay" unique_id=749901391]
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -79,119 +80,119 @@ theme_override_constants/margin_top = 100
 theme_override_constants/margin_right = 100
 theme_override_constants/margin_bottom = 100
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/HelpOverlay/MarginContainer" unique_id=90587879]
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/UILayer/HelpOverlay/MarginContainer" unique_id=804903932]
 layout_mode = 2
 
-[node name="Title" type="Label" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer" unique_id=420643329]
+[node name="Title" type="Label" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer" unique_id=17807006]
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
 text = "How to Play - Card Types"
 horizontal_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer" unique_id=1928710999]
+[node name="HSeparator" type="HSeparator" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer" unique_id=1133768676]
 layout_mode = 2
 theme_override_constants/separation = 30
 
-[node name="ScrollContainer" type="ScrollContainer" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer" unique_id=472543156]
+[node name="ScrollContainer" type="ScrollContainer" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer" unique_id=689946174]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="CardExplanations" type="VBoxContainer" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer" unique_id=748216717]
+[node name="CardExplanations" type="VBoxContainer" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer" unique_id=1187002461]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 20
 
-[node name="NormalCards" type="Label" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=183704814]
+[node name="NormalCards" type="Label" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=1215473478]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Normal Cards"
 
-[node name="NormalDesc" type="Label" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=256329607]
+[node name="NormalDesc" type="Label" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=151340726]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "These are your standard playing cards. They work exactly like traditional cards in poker - each has a suit (hearts, diamonds, clubs, spades) and a value (A, 2-10, J, Q, K). Use them to make the best poker hand possible!"
 autowrap_mode = 3
 
-[node name="Spacer1" type="Control" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=1424608493]
+[node name="Spacer1" type="Control" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=528786260]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="QuantumCards" type="Label" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=1780370417]
+[node name="QuantumCards" type="Label" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=416066962]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Quantum Cards"
 
-[node name="QuantumIntro" type="Label" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=1077627580]
+[node name="QuantumIntro" type="Label" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=651846214]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "These special cards harness quantum mechanics to give you unique advantages:"
 autowrap_mode = 3
 
-[node name="Spacer2" type="Control" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=768328222]
+[node name="Spacer2" type="Control" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=134766807]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
-[node name="Entangled" type="Label" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=1781391189]
+[node name="Entangled" type="Label" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=1346223929]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "🔗 Entangle"
 
-[node name="EntangledDesc" type="Label" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=1150559268]
+[node name="EntangledDesc" type="Label" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=1907268710]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "Two cards become quantum-entangled! When the first card changes, its entangled partner mirrors that change instantly."
 autowrap_mode = 3
 
-[node name="Spacer3" type="Control" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=152546507]
+[node name="Spacer3" type="Control" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=74641024]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
-[node name="Superposition" type="Label" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=1045440458]
+[node name="Superposition" type="Label" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=253913730]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "⚛️ Superposition Cards"
 
-[node name="SuperpositionDesc" type="Label" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=1102577229]
+[node name="SuperpositionDesc" type="Label" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=259968615]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "The discarded cards exists in multiple states at once! With this card you can take one. It can be several different cards simultaneously until you 'observe' it (play or discard), at which point it collapses into one of its possible values."
 autowrap_mode = 3
 
-[node name="Spacer4" type="Control" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=1930940727]
+[node name="Spacer4" type="Control" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=620082136]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
-[node name="AroundWorld" type="Label" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=1964040044]
+[node name="AroundWorld" type="Label" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=811758039]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "🌍 Around the World"
 
-[node name="AroundWorldDesc" type="Label" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=999881504]
+[node name="AroundWorldDesc" type="Label" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=405183940]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "The world spins and your cards swap places with your opponent one's."
 autowrap_mode = 3
 
-[node name="Spacer5" type="Control" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=1385769935]
+[node name="Spacer5" type="Control" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=747102563]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
-[node name="Counter" type="Label" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=2086696993]
+[node name="Counter" type="Label" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=1686187519]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "🚫 Counter/NOT Card"
 
-[node name="CounterDesc" type="Label" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=2003538051]
+[node name="CounterDesc" type="Label" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/ScrollContainer/CardExplanations" unique_id=827579663]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "With this card a random card from a chosen player changes its value to the opposite of the spectrum. This means high value cards become low value ones and so the other way around. A 7 would become a 9, a 6 would become a 10, a 5 a J and so on."
 autowrap_mode = 3
 
-[node name="HSeparator2" type="HSeparator" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer" unique_id=660792299]
+[node name="HSeparator2" type="HSeparator" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer" unique_id=2114477801]
 layout_mode = 2
 theme_override_constants/separation = 30
 
-[node name="CloseButton" type="Button" parent="UILayer/HelpOverlay/MarginContainer/VBoxContainer" unique_id=178254206]
+[node name="CloseButton" type="Button" parent="SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer" unique_id=596631453]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 28

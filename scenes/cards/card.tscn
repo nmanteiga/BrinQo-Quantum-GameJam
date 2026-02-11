@@ -34,6 +34,19 @@ texture = ExtResource("4_1q37b")
 expand_mode = 1
 stretch_mode = 4
 
+[node name="Shadow" type="TextureRect" parent="." unique_id=868157819]
+modulate = Color(0, 0, 0, 1)
+self_modulate = Color(1, 1, 1, 0.36862746)
+show_behind_parent = true
+texture_filter = 6
+offset_left = -381.0
+offset_top = -440.0
+offset_right = 379.0
+offset_bottom = 632.0
+texture = ExtResource("4_1q37b")
+expand_mode = 1
+stretch_mode = 4
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=609577973]
 visible = false
 position = Vector2(3, -6.5)

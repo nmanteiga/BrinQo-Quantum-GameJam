@@ -43,7 +43,7 @@ stream_3/stream = ExtResource("10_6tgsi")
 script = ExtResource("1_wpgb8")
 card_scene = ExtResource("2_qxbf1")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1647533406]
 position = Vector2(960, 540)
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1762157097]
@@ -149,10 +149,10 @@ anchor_left = 0.23700002
 anchor_top = 0.245
 anchor_right = 0.81000006
 anchor_bottom = 0.68200004
-offset_left = -0.040039063
-offset_top = 0.3999939
-offset_right = 0.79992676
-offset_bottom = 0.4399414
+offset_left = -47.04004
+offset_top = 41.399994
+offset_right = -46.200073
+offset_bottom = 41.43994
 
 [node name="LabelResultado" type="Label" parent="CanvasLayer/PanelGameOver" unique_id=1224346142]
 layout_mode = 1
@@ -160,10 +160,10 @@ anchors_preset = -1
 anchor_top = 0.845
 anchor_right = 0.998
 anchor_bottom = 1.0270001
-offset_left = 8.0
-offset_top = -0.13000488
-offset_right = 0.20202637
-offset_bottom = 0.041931152
+offset_left = 57.0
+offset_top = -343.84003
+offset_right = -61.797974
+offset_bottom = -343.6681
 
 [node name="AudioStream(Music)" type="AudioStreamPlayer2D" parent="." unique_id=335573927]
 stream = ExtResource("6_vd5qv")

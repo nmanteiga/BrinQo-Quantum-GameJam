@@ -5,6 +5,7 @@ enum Tipo { NORMAL, QUANTUM }
 enum Efecto { NINGUNO, ENTRELAZADO, SUPERPOSICION, AROUND_WORLD, COUNTER }
 
 @export var textura_especial : Texture2D
+@onready var shadow: TextureRect = $Shadow
 
 var tipo_carta : int = Tipo.NORMAL
 var efecto_especial : int = Efecto.NINGUNO
@@ -29,6 +30,7 @@ signal hovered_off
 
 @export var card_scale : float = 0.25
 @export var tilt_strength : float = 15.0  # Maximum rotation angle in degrees
+@export var max_offset_shadow: float = 150.0
 var base_scale : Vector2
 var is_mouse_hovering : bool = false
 
@@ -43,6 +45,10 @@ func _ready():
 	
 	if get_parent().has_method("connect_card_signals"):
 		get_parent().connect_card_signals(self)
+	
+	# Hide shadow by default
+	if shadow:
+		shadow.visible = false
 	
 	update_visuals()
 	call_deferred("adjust_collision_shape")
@@ -65,6 +71,7 @@ func _process(delta):
 		
 		sprite.material.set_shader_parameter("y_rot", lerp(current_y, target_y_rot, delta * 10.0))
 		sprite.material.set_shader_parameter("x_rot", lerp(current_x, target_x_rot, delta * 10.0))
+	handle_shadow(delta)
 
 func adjust_collision_shape():
 	var collision = $CollisionShape2D
@@ -197,3 +204,43 @@ func reset_rotation(progress: float):
 		var current_x = sprite.material.get_shader_parameter("x_rot")
 		sprite.material.set_shader_parameter("y_rot", current_y * progress)
 		sprite.material.set_shader_parameter("x_rot", current_x * progress)
+		
+func handle_shadow(delta: float) -> void:
+	if not shadow or not shadow.visible:
+		return
+		
+	# Get the actual viewport the card is in
+	var viewport = get_viewport()
+	if not viewport:
+		return
+		
+	var viewport_size = viewport.get_visible_rect().size
+	var center_x = viewport_size.x / 2.0
+	
+	# Distance from center of viewport to card position
+	var distance: float = global_position.x - center_x
+	
+	# Calculate weight (0 at center, 1 at edges)
+	var weight = clamp(abs(distance / center_x), 0.0, 1.0)
+	
+	# Shadow offsets opposite to the direction from center
+	var target_offset = -sign(distance) * max_offset_shadow * weight
+	
+	# Store original offsets (from scene)
+	var base_left = -381.0
+	var base_right = 379.0
+	
+	# Apply offset by shifting both left and right equally
+	var current_offset = (shadow.offset_left - base_left)
+	var new_offset = lerp(current_offset, target_offset, delta * 10.0)
+	
+	shadow.offset_left = base_left + new_offset
+	shadow.offset_right = base_right + new_offset
+
+func show_shadow():
+	if shadow:
+		shadow.visible = true
+
+func hide_shadow():
+	if shadow:
+		shadow.visible = false

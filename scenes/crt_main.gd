@@ -1,9 +1,10 @@
 extends Node2D
 
 @onready var viewport = $SubViewport
-@onready var help_button = $UILayer/HelpButton
-@onready var help_overlay = $UILayer/HelpOverlay
-@onready var close_button = $UILayer/HelpOverlay/MarginContainer/VBoxContainer/CloseButton
+@onready var help_button = $SubViewport/UILayer/HelpButton
+@onready var help_overlay = $SubViewport/UILayer/HelpOverlay
+@onready var close_button = $SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/CloseButton
+@onready var table = $SubViewport/table
 
 var currently_hovered = null
 var is_paused = false
@@ -22,8 +23,8 @@ func _input(event):
 	if event is InputEventMouseButton or event is InputEventMouseMotion:
 		viewport.push_input(event)
 	
-	# Manually trigger hover detection
-	if event is InputEventMouseMotion:
+	# Only do hover detection when not paused
+	if event is InputEventMouseMotion and not is_paused:
 		var mouse_pos = event.position
 		var space_state = viewport.world_2d.direct_space_state
 		var query = PhysicsPointQueryParameters2D.new()
@@ -56,9 +57,9 @@ func _on_close_button_pressed():
 func show_help_overlay():
 	help_overlay.visible = true
 	is_paused = true
-	get_tree().paused = true
+	table.process_mode = Node.PROCESS_MODE_DISABLED
 
 func hide_help_overlay():
 	help_overlay.visible = false
 	is_paused = false
-	get_tree().paused = false
+	table.process_mode = Node.PROCESS_MODE_INHERIT

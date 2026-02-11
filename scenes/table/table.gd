@@ -481,9 +481,17 @@ func animacion_ia_mirando():
 		audio.play()
 	mirando_carta = false
 
-func start_drag(c): carta_en_movimiento = c; c.scale = c.base_scale * 1.2; c.z_index = 20
+func start_drag(c): 
+	carta_en_movimiento = c
+	c.scale = c.base_scale * 1.2
+	c.z_index = 20
+	if c.has_method("show_shadow"):
+		c.show_shadow()
+
 func finish_drag():
 	if carta_en_movimiento:
+		if carta_en_movimiento.has_method("hide_shadow"):
+			carta_en_movimiento.hide_shadow()
 		var dest = check_slot_carta()
 		if dest and fase_actual == Fase.SELECCION: jugar_carta_en_mesa(carta_en_movimiento, dest)
 		else: devolver_carta_a_mano(carta_en_movimiento)
@@ -493,6 +501,8 @@ func devolver_carta_a_mano(c):
 	var dest = (pos_jugador if c.controlled_by_player==1 else pos_rival).position + Vector2(208 * c.slot_index, 0)
 	var t = create_tween(); t.tween_property(c, "position", dest, 0.3)
 	c.rotation_degrees = 0; c.scale = c.base_scale; c.z_index = 1
+	if c.has_method("hide_shadow"):
+		c.hide_shadow()
 	if c.has_node("CollisionShape2D"): c.get_node("CollisionShape2D").disabled = false
 
 func connect_card_signals(c):
@@ -500,7 +510,7 @@ func connect_card_signals(c):
 	if !c.is_connected("hovered_off", on_hovered_off_card): c.connect("hovered_off", on_hovered_off_card)
 
 func on_hovered_over_card(c): 
-	if fase_actual == Fase.SELECCION and !mirando_carta: 
+	if fase_actual == Fase.SELECCION and !mirando_carta and !carta_en_movimiento: 
 		if carta_hovered != c:
 			hover.pitch_scale = randf_range(0.9, 1.2)
 			hover.play()
