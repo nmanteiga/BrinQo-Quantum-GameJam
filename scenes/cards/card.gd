@@ -23,6 +23,9 @@ var es_superposicion : bool = false
 @onready var sprite = $TextureRect
 signal hovered
 signal hovered_off
+#Audio
+@onready var flip1: AudioStreamPlayer2D = $"AudioStream(Flip1)"
+@onready var flip2: AudioStreamPlayer2D = $"AudioStream(Flip2)"
 
 @export var card_scale : float = 0.25
 @export var tilt_strength : float = 15.0  # Maximum rotation angle in degrees
@@ -143,6 +146,8 @@ func flip_card():
 	tween.set_trans(Tween.TRANS_CUBIC)
 	
 	# Rotate to 90 degrees (edge-on, card is invisible)
+	flip1.pitch_scale = randf_range(0.8, 1.2)
+	flip1.play()
 	tween.tween_method(
 		func(angle): sprite.material.set_shader_parameter("y_rot", angle),
 		0.0,
@@ -162,7 +167,6 @@ func flip_card():
 	
 	# Small pause at 90 degrees to ensure texture loads
 	tween.tween_interval(0.01)
-	
 	# Rotate from -90 to 0 (coming from the other side)
 	tween.tween_method(
 		func(angle): sprite.material.set_shader_parameter("y_rot", angle),
@@ -177,7 +181,6 @@ func aplicar_efecto_visual_cuantico(color: Color):
 func _on_input_event(viewport, event, shape_idx): pass 
 
 func _on_mouse_entered() -> void:
-	print("HOVER WORKS!")
 	is_mouse_hovering = true
 	emit_signal("hovered", self)
 

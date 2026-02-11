@@ -14,6 +14,9 @@ extends Node2D
 @onready var boton_plantarse = $CanvasLayer/BotonPlantarse
 @onready var panel_game_over = $CanvasLayer/PanelGameOver
 @onready var label_resultado = $CanvasLayer/PanelGameOver/LabelResultado
+# AUDIO
+@onready var audio: AudioStreamPlayer2D = $"AudioStream(Play)"
+@onready var hover: AudioStreamPlayer2D = $"AudioStream(Hover)"
 
 # DEBUG
 @onready var boton_debug = $CanvasLayer/BotonDebug 
@@ -49,7 +52,6 @@ func _ready():
 	if panel_game_over: panel_game_over.visible = false
 	if boton_plantarse: boton_plantarse.pressed.connect(finalizar_partida)
 	if boton_debug: boton_debug.pressed.connect(toggle_debug_vision)
-
 	crear_mazo()
 	repartir_mano_inicial()
 	actualizar_ui_ronda()
@@ -98,10 +100,13 @@ func crear_carta_normal(marker: Marker2D, es_jugador: int):
 
 func colocar_carta(carta, marker, idx):
 	var destino = marker.position + Vector2(208 * idx, 0)
-	carta.z_index = 10 
+	carta.z_index = 10
+	audio.play()
 	var tween = create_tween()
 	tween.tween_property(carta, "position", destino, 0.5).set_trans(Tween.TRANS_CUBIC)
 	tween.parallel().tween_callback(func(): carta.z_index = 1).set_delay(0.5)
+
+	
 
 
 # --- JUEGO ---
@@ -109,7 +114,7 @@ func jugar_carta_en_mesa(carta: Carta, zona: Node2D):
 	var dest = zona_juego_p1.global_position if carta.controlled_by_player == 1 else zona_juego_p2.global_position
 	if carta.controlled_by_player == 1: carta_jugada_p1 = carta
 	else: carta_jugada_p2 = carta
-
+	audio.play()
 	var tween = create_tween()
 	tween.tween_property(carta, "global_position", dest, 0.2)
 	tween.parallel().tween_property(carta, "rotation_degrees", 0, 0.2)
@@ -493,12 +498,18 @@ func connect_card_signals(c):
 	if !c.is_connected("hovered", on_hovered_over_card): c.connect("hovered", on_hovered_over_card)
 	if !c.is_connected("hovered_off", on_hovered_off_card): c.connect("hovered_off", on_hovered_off_card)
 
-func on_hovered_over_card(c): if fase_actual == Fase.SELECCION and !mirando_carta and !carta_hovered: carta_hovered = true; highlight_card(c, true)
+func on_hovered_over_card(c): 
+	if fase_actual == Fase.SELECCION and !mirando_carta: 
+		if carta_hovered != c:
+			hover.pitch_scale = randf_range(0.9, 1.2)
+			hover.play()
+		carta_hovered = c
+		highlight_card(c, true)
 func on_hovered_off_card(c): 
 	if !carta_en_movimiento: 
 		highlight_card(c, false); var n = check_carta()
 		if n and n is Carta: highlight_card(n, true)
-		else: carta_hovered = false
+		else: carta_hovered = null
 
 func highlight_card(c, h): 
 	if is_instance_valid(c) and c is Carta: 

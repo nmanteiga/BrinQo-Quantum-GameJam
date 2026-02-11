@@ -36,6 +36,7 @@ mouse_force_pass_scroll_events = false
 
 [node name="SubViewport" type="SubViewport" parent="." unique_id=22388736]
 handle_input_locally = false
+audio_listener_enable_2d = true
 size = Vector2i(1920, 1080)
 
-[node name="table" parent="SubViewport" unique_id=1669528058 instance=ExtResource("1_o7dqw")]
+[node name="table" parent="SubViewport" unique_id=719587053 instance=ExtResource("1_o7dqw")]

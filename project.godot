@@ -14,6 +14,11 @@ config/name="game"
 run/main_scene="uid://6vvx8lbe4stq"
 config/features=PackedStringArray("4.6", "Forward Plus")
 
+[autoload]
+
+Global="*res://global.gd"
+AudioManager="*uid://demehawl2y43g"
+
 [display]
 
 window/size/viewport_width=1920

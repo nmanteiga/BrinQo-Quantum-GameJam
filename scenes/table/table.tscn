@@ -5,6 +5,12 @@
 [ext_resource type="Texture2D" uid="uid://c6d4ofta0awia" path="res://assets/background/table_v02.png" id="3_0y6hh"]
 [ext_resource type="Texture2D" uid="uid://dx6oi56fp0wuk" path="res://assets/cards/back/back_v09.png" id="4_0y6hh"]
 [ext_resource type="Texture2D" uid="uid://dx7lytm5ijdvx" path="res://assets/cards/mazo_especial.png" id="4_vd5qv"]
+[ext_resource type="AudioStream" uid="uid://upb8wui6c0tb" path="res://assets/sounds/music/QUARDS.mp3" id="6_vd5qv"]
+[ext_resource type="AudioStream" uid="uid://dci3fqlfqwkct" path="res://assets/sounds/normal_cards/play.mp3" id="7_6tgsi"]
+[ext_resource type="AudioStream" uid="uid://d156es4c7pkne" path="res://assets/sounds/normal_cards/draw1.mp3" id="7_tg5vf"]
+[ext_resource type="AudioStream" uid="uid://ddnn6gcp0kqp0" path="res://assets/sounds/normal_cards/draw2.mp3" id="9_gelyt"]
+[ext_resource type="AudioStream" uid="uid://cpwub8pu8qgdl" path="res://assets/sounds/normal_cards/draw4.mp3" id="10_6tgsi"]
+[ext_resource type="AudioStream" uid="uid://dbj48dvb85iir" path="res://assets/sounds/normal_cards/draw3.mp3" id="10_ctt8d"]
 
 [sub_resource type="GDScript" id="GDScript_wpgb8"]
 script/source = "extends Node2D
@@ -26,9 +32,19 @@ size = Vector2(232.5, 312)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tg5vf"]
 size = Vector2(238, 311)
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_gelyt"]
+streams_count = 4
+stream_0/stream = ExtResource("7_tg5vf")
+stream_1/stream = ExtResource("9_gelyt")
+stream_2/stream = ExtResource("10_ctt8d")
+stream_3/stream = ExtResource("10_6tgsi")
+
 [node name="table" type="Node2D" unique_id=719587053]
 script = ExtResource("1_wpgb8")
 card_scene = ExtResource("2_qxbf1")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(960, 540)
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1762157097]
 anchors_preset = 15
@@ -148,6 +164,20 @@ offset_left = 8.0
 offset_top = -0.13000488
 offset_right = 0.20202637
 offset_bottom = 0.041931152
+
+[node name="AudioStream(Music)" type="AudioStreamPlayer2D" parent="." unique_id=335573927]
+stream = ExtResource("6_vd5qv")
+volume_db = -0.655
+autoplay = true
+bus = &"Music"
+
+[node name="AudioStream(Play)" type="AudioStreamPlayer2D" parent="." unique_id=919092400]
+stream = SubResource("AudioStreamRandomizer_gelyt")
+bus = &"SFX"
+
+[node name="AudioStream(Hover)" type="AudioStreamPlayer2D" parent="." unique_id=1181603259]
+stream = ExtResource("7_6tgsi")
+volume_db = -11.044
 
 [connection signal="input_event" from="mazoNormal" to="." method="_on_mazo_normal_input_event"]
 [connection signal="input_event" from="mazoEspecial" to="." method="_on_mazo_especial_input_event"]
