@@ -165,12 +165,6 @@ offset_top = -343.84003
 offset_right = -61.797974
 offset_bottom = -343.6681
 
-[node name="AudioStream(Music)" type="AudioStreamPlayer2D" parent="." unique_id=335573927]
-stream = ExtResource("6_vd5qv")
-volume_db = -0.655
-autoplay = true
-bus = &"Music"
-
 [node name="AudioStream(Play)" type="AudioStreamPlayer2D" parent="." unique_id=919092400]
 stream = SubResource("AudioStreamRandomizer_gelyt")
 bus = &"SFX"

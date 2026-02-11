@@ -5,6 +5,7 @@ extends Node2D
 @onready var help_overlay = $SubViewport/UILayer/HelpOverlay
 @onready var close_button = $SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/CloseButton
 @onready var table = $SubViewport/table
+@onready var music_player = $SubViewport/MusicPlayer
 
 var currently_hovered = null
 var is_paused = false
@@ -12,6 +13,9 @@ var is_paused = false
 func _ready():
 	help_button.pressed.connect(_on_help_button_pressed)
 	close_button.pressed.connect(_on_close_button_pressed)
+	# Store initial playback position
+	if music_player:
+		music_player.set_meta("was_playing", true)
 
 func _input(event):
 	# Handle ESC key to close overlay
@@ -57,9 +61,17 @@ func _on_close_button_pressed():
 func show_help_overlay():
 	help_overlay.visible = true
 	is_paused = true
-	table.process_mode = Node.PROCESS_MODE_DISABLED
+	# Reduce music volume instead of filter (more reliable)
+	var music_bus = AudioServer.get_bus_index("Music")
+	AudioServer.set_bus_volume_db(music_bus, -15.0)  # Quieter
+	# OR enable filter effect on Master bus
+	# AudioServer.set_bus_effect_enabled(0, 0, true)
 
 func hide_help_overlay():
 	help_overlay.visible = false
 	is_paused = false
-	table.process_mode = Node.PROCESS_MODE_INHERIT
+	# Restore music volume
+	var music_bus = AudioServer.get_bus_index("Music")
+	AudioServer.set_bus_volume_db(music_bus, 0.0)  # Normal volume
+	# OR disable filter effect on Master bus
+	# AudioServer.set_bus_effect_enabled(0, 0, false)
