@@ -103,7 +103,7 @@ func colocar_carta(carta, marker, idx):
 	carta.z_index = 10
 	audio.play()
 	var tween = create_tween()
-	tween.tween_property(carta, "position", destino, 0.5).set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(carta, "position", destino, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	tween.parallel().tween_callback(func(): carta.z_index = 1).set_delay(0.5)
 
 	
@@ -254,7 +254,7 @@ func robar_carta_cuantica(es_jugador: bool):
 		var centro = get_viewport_rect().size / 2
 		var dest = centro + (Vector2(0, 50) if es_jugador else Vector2(0, -50))
 		var tween = create_tween()
-		tween.tween_property(anim, "global_position", dest, 0.6).set_trans(Tween.TRANS_BACK)
+		tween.tween_property(anim, "global_position", dest, 0.6).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 		tween.parallel().tween_property(anim, "scale", Vector2(1.5, 1.5), 0.6) 
 		await tween.finished
 		
@@ -475,9 +475,10 @@ func animacion_ia_mirando():
 	if slots_rival.size() > 0:
 		var c = slots_rival.values().pick_random()
 		var t = create_tween()
-		t.tween_property(c, "position", c.position + Vector2(0,30), 0.3).set_trans(Tween.TRANS_BACK)
+		t.tween_property(c, "position", c.position + Vector2(0,30), 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 		await get_tree().create_timer(1.5).timeout
 		t = create_tween(); t.tween_property(c, "position", c.position - Vector2(0,30), 0.3)
+		audio.play()
 	mirando_carta = false
 
 func start_drag(c): carta_en_movimiento = c; c.scale = c.base_scale * 1.2; c.z_index = 20
@@ -489,7 +490,7 @@ func finish_drag():
 		carta_en_movimiento = null
 
 func devolver_carta_a_mano(c):
-	var dest = (pos_jugador if c.controlled_by_player==1 else pos_rival).position + Vector2(150 * c.slot_index, 0)
+	var dest = (pos_jugador if c.controlled_by_player==1 else pos_rival).position + Vector2(208 * c.slot_index, 0)
 	var t = create_tween(); t.tween_property(c, "position", dest, 0.3)
 	c.rotation_degrees = 0; c.scale = c.base_scale; c.z_index = 1
 	if c.has_node("CollisionShape2D"): c.get_node("CollisionShape2D").disabled = false
