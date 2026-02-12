@@ -247,9 +247,12 @@ func robar_carta_cuantica(es_jugador: bool):
 		add_child(anim)
 		var origen = mazo_especial_visual.global_position if mazo_especial_visual else mazo_visual.global_position
 		anim.global_position = origen
-		anim.scale = Vector2(0.5, 0.5); anim.z_index = 100 
+		anim.scale = Vector2(0.5, 0.5); anim.z_index = 2 
 		anim.setup_quantum(efecto, 1 if es_jugador else 2)
 		anim.face_up = true; anim.update_visuals()
+		
+		# Wait for card to be fully ready
+		await get_tree().process_frame
 		
 		# Show shadow for quantum card display
 		if anim.has_method("show_shadow"):
@@ -259,20 +262,62 @@ func robar_carta_cuantica(es_jugador: bool):
 		var dest = centro + (Vector2(0, 50) if es_jugador else Vector2(0, -50))
 		var tween = create_tween()
 		tween.tween_property(anim, "global_position", dest, 0.6).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
-		tween.parallel().tween_property(anim, "scale", Vector2(1.5, 1.5), 0.6) 
+		tween.parallel().tween_property(anim, "scale", Vector2(0.6, 0.6), 0.6) 
 		await tween.finished
 		
 		if fase_actual == Fase.GAME_OVER and ronda_actual > MIN_RONDAS: return
 		await get_tree().create_timer(3.0).timeout 
 		
-		var tween_bye = create_tween()
-		tween_bye.tween_property(anim, "scale", Vector2(0,0), 0.3)
-		tween_bye.tween_callback(anim.queue_free)
-		await tween_bye.finished
+		# Dissolve effect before removing card
+		var sprite_node = anim.sprite
+		var animated_node = anim.animated_quantum
+		var shadow_node = anim.shadow
+		
+		if sprite_node and sprite_node.material:
+			print("=== DISSOLVE DEBUG ===")
+			print("Dissolving quantum card - checking all layers")
+			print("Sprite visible: ", sprite_node.visible)
+			print("Animated visible: ", animated_node.visible if animated_node else "No animated node")
+			print("Shadow visible: ", shadow_node.visible if shadow_node else "No shadow node")
+			
+			var tween_dissolve = create_tween()
+			
+			# Dissolve main sprite
+			tween_dissolve.tween_method(
+				func(val): 
+					sprite_node.material.set_shader_parameter("dissolve_value", val),
+				0.0,
+				1.0,
+				1.5
+			)
+			
+			# Also dissolve animated quantum overlay if it exists and is visible
+			if animated_node and animated_node.visible and animated_node.material:
+				tween_dissolve.parallel().tween_method(
+					func(val): 
+						animated_node.material.set_shader_parameter("dissolve_value", val),
+					0.0,
+					1.0,
+					1.5
+				)
+			
+			# Also dissolve shadow if it exists and is visible
+			if shadow_node and shadow_node.visible and shadow_node.material:
+				tween_dissolve.parallel().tween_method(
+					func(val): 
+						shadow_node.material.set_shader_parameter("dissolve_value", val),
+					0.0,
+					1.0,
+					1.5
+				)
+			
+			await tween_dissolve.finished
+		else:
+			print("Failed to get sprite node or material")
+		
+		anim.queue_free()
 	
-	aplicar_logica_cuantica(efecto, es_jugador)
-
-func aplicar_logica_cuantica(efecto: int, es_jugador: bool):
+	# Apply quantum logic after animation
 	if es_jugador:
 		match efecto:
 			1: iniciar_efecto_entrelazado()

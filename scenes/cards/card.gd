@@ -30,7 +30,7 @@ signal hovered_off
 @onready var flip2: AudioStreamPlayer2D = $"AudioStream(Flip2)"
 
 @export var card_scale : float = 0.25
-@export var tilt_strength : float = 15.0  # Maximum rotation angle in degrees
+@export var tilt_strength : float = 20.0  # Maximum rotation angle in degrees
 @export var max_offset_shadow: float = 150.0
 var base_scale : Vector2
 var is_mouse_hovering : bool = false
@@ -46,6 +46,10 @@ func _ready():
 	# Also duplicate material for animated quantum so it can have same shader effects
 	if animated_quantum and animated_quantum.material:
 		animated_quantum.material = animated_quantum.material.duplicate()
+	
+	# Duplicate shadow material for dissolve effect
+	if shadow and shadow.material:
+		shadow.material = shadow.material.duplicate()
 	
 	if get_parent().has_method("connect_card_signals"):
 		get_parent().connect_card_signals(self)
@@ -312,7 +316,7 @@ func handle_shadow(delta: float) -> void:
 		return
 		
 	var viewport_size = viewport.get_visible_rect().size
-	var center_x = viewport_size.x / 2.0
+	var center_x = viewport_size.x / 1.6
 	var distance: float = global_position.x - center_x
 	var weight = clamp(abs(distance / center_x), 0.0, 1.0)
 	var target_offset = -sign(distance) * max_offset_shadow * weight

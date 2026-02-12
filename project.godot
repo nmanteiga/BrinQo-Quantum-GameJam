@@ -21,7 +21,6 @@ buses/default_bus_layout="uid://d3p6onew80nrs"
 [autoload]
 
 Global="*res://global.gd"
-AudioManager="*uid://demehawl2y43g"
 
 [display]
 
