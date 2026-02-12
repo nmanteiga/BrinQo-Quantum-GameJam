@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dduxvg8md7xpi"
-path="res://.godot/imported/back_v02.png-2ef042d14bc25cfacf45f2ad7da1db5d.ctex"
+uid="uid://1dtxi47lf184"
+path="res://.godot/imported/entanglement06_v02.png-9fa4901eddcbf785fdd3f63c94615518.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/cards/back/back_v02.png"
-dest_files=["res://.godot/imported/back_v02.png-2ef042d14bc25cfacf45f2ad7da1db5d.ctex"]
+source_file="res://assets/cards/entanglement/entanglement06_v02.png"
+dest_files=["res://.godot/imported/entanglement06_v02.png-9fa4901eddcbf785fdd3f63c94615518.ctex"]
 
 [params]
 

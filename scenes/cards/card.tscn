@@ -6,6 +6,11 @@
 [ext_resource type="Texture2D" uid="uid://dimgb1q2tuhcl" path="res://assets/cards/back/back_v01.png" id="4_1q37b"]
 [ext_resource type="Shape2D" uid="uid://cnq8juxgml0mg" path="res://assets/cards/collision_carta.tres" id="4_73nwn"]
 [ext_resource type="AudioStream" uid="uid://bcnigvfmh1i1w" path="res://assets/sounds/normal_cards/flip2.mp3" id="7_61bms"]
+[ext_resource type="Texture2D" uid="uid://l2rd5khnbh2e" path="res://assets/cards/not/not01_v02.png" id="7_ecjy3"]
+[ext_resource type="Texture2D" uid="uid://d3t6tyonx08ru" path="res://assets/cards/not/not02_v02.png" id="8_efto4"]
+[ext_resource type="Texture2D" uid="uid://dgderv66ixjj5" path="res://assets/cards/not/not03_v02.png" id="9_pt5j8"]
+[ext_resource type="Texture2D" uid="uid://com20lcw2rx7r" path="res://assets/cards/not/not04_v02.png" id="10_gbo1g"]
+[ext_resource type="Texture2D" uid="uid://d24np1f3xkycv" path="res://assets/cards/not/not05_v02.png" id="11_rqyxt"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mo7yc"]
 shader = ExtResource("3_1q37b")
@@ -18,6 +23,19 @@ shader_parameter/inset = 0.0
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_4tkg3"]
 streams_count = 1
 stream_0/stream = ExtResource("7_61bms")
+
+[sub_resource type="AnimatedTexture" id="AnimatedTexture_rk8ys"]
+frames = 5
+speed_scale = 4.0
+frame_0/texture = ExtResource("7_ecjy3")
+frame_1/texture = ExtResource("8_efto4")
+frame_1/duration = 1.0
+frame_2/texture = ExtResource("9_pt5j8")
+frame_2/duration = 1.0
+frame_3/texture = ExtResource("10_gbo1g")
+frame_3/duration = 1.0
+frame_4/texture = ExtResource("11_rqyxt")
+frame_4/duration = 1.0
 
 [node name="card" type="Area2D" unique_id=2039611704]
 script = ExtResource("1_0qqw3")
@@ -58,6 +76,16 @@ position = Vector2(-380, -536)
 stream = SubResource("AudioStreamRandomizer_4tkg3")
 volume_db = -7.363
 bus = &"SFX"
+
+[node name="AnimatedQuantum" type="TextureRect" parent="." unique_id=585958923]
+texture_filter = 6
+material = SubResource("ShaderMaterial_mo7yc")
+offset_left = -380.0
+offset_top = -536.0
+offset_right = 384.0
+offset_bottom = 528.0
+texture = SubResource("AnimatedTexture_rk8ys")
+expand_mode = 1
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]

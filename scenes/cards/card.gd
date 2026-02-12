@@ -6,6 +6,7 @@ enum Efecto { NINGUNO, ENTRELAZADO, SUPERPOSICION, AROUND_WORLD, COUNTER, REVELA
 
 @export var textura_especial : Texture2D
 @onready var shadow: TextureRect = $Shadow
+@onready var animated_quantum: TextureRect = $AnimatedQuantum
 
 var tipo_carta : int = Tipo.NORMAL
 var efecto_especial : int = Efecto.NINGUNO
@@ -42,11 +43,18 @@ func _ready():
 	if sprite and sprite.material:
 		sprite.material = sprite.material.duplicate()
 	
+	# Also duplicate material for animated quantum so it can have same shader effects
+	if animated_quantum and animated_quantum.material:
+		animated_quantum.material = animated_quantum.material.duplicate()
+	
 	if get_parent().has_method("connect_card_signals"):
 		get_parent().connect_card_signals(self)
 	
 	if shadow:
 		shadow.visible = false
+	
+	if animated_quantum:
+		animated_quantum.visible = false
 	
 	update_visuals()
 	call_deferred("adjust_collision_shape")
@@ -90,6 +98,10 @@ func setup_quantum(p_efecto: int, p_is_player: int):
 	efecto_especial = p_efecto
 	controlled_by_player = p_is_player
 	face_up = (p_is_player == 1) 
+	
+	# Load the appropriate animated texture for this quantum effect
+	load_quantum_animation()
+	
 	update_visuals()
 
 func get_suit_name(suit_id: int) -> String:
@@ -102,16 +114,49 @@ func get_suit_name(suit_id: int) -> String:
 
 func get_card_texture_path() -> String:
 	if not face_up:
-		return "res://assets/cards/back/back_v01.png"
+		return "res://assets/cards/back/back_v10.png"
 	
 	var suit_name = get_suit_name(suit)
 	var card_number = value + 1 
 	return "res://assets/cards/%s/%s_%02d_v01.png" % [suit_name, suit_name, card_number]
 
+func get_quantum_base_texture() -> Texture2D:
+	"""Returns the base texture for quantum cards based on their effect type"""
+	var texture_path: String
+	
+	if not face_up:
+		return load("res://assets/cards/back/back_v10.png")
+	
+	match efecto_especial:
+		Efecto.ENTRELAZADO:
+			texture_path = "res://assets/cards/entanglement/entanglement01_v03.png"
+		Efecto.SUPERPOSICION:
+			texture_path = "res://assets/cards/superposition/super01_v02.png"
+		Efecto.AROUND_WORLD:
+			texture_path = "res://assets/cards/around/around_v02.png"
+		Efecto.COUNTER:
+			texture_path = "res://assets/cards/not/not01_v02.png"
+		Efecto.REVELATION:
+			texture_path = "res://assets/cards/revelation/revelation_v04.png"
+		_:
+			# Fallback to the exported textura_especial or default
+			return textura_especial if textura_especial else load("res://assets/cards/mazo_especial.png")
+	
+	var texture = load(texture_path)
+	if texture:
+		return texture
+	else:
+		print("Failed to load quantum texture: ", texture_path)
+		return textura_especial if textura_especial else null
+
 func update_visuals():
 	if not sprite: return
 	
 	if tipo_carta == Tipo.NORMAL:
+		# Hide animated quantum overlay for normal cards
+		if animated_quantum:
+			animated_quantum.visible = false
+		
 		var texture_path = get_card_texture_path()
 		var texture = load(texture_path)
 		if texture:
@@ -120,8 +165,89 @@ func update_visuals():
 			print("Failed to load texture: ", texture_path)
 	
 	else:
-		if textura_especial:
-			sprite.texture = textura_especial
+		# Quantum card logic - load texture based on effect type
+		var quantum_texture = get_quantum_base_texture()
+		if quantum_texture:
+			sprite.texture = quantum_texture
+		
+		# Show animated quantum overlay when card is face up
+		if animated_quantum:
+			animated_quantum.visible = face_up
+			# Ensure it's on top of the main sprite
+			animated_quantum.z_index = sprite.z_index + 1
+
+func load_quantum_animation():
+	"""Loads the appropriate animated texture based on quantum effect type"""
+	if not animated_quantum:
+		return
+	
+	# Create animated texture based on effect type
+	var anim_tex = AnimatedTexture.new()
+	
+	match efecto_especial:
+		Efecto.ENTRELAZADO:  # Effect 1
+			anim_tex.frames = 7
+			anim_tex.speed_scale = 4.0
+			for i in range(7):
+				var frame_path = "res://assets/cards/entanglement/entanglement%02d_v03.png" % (i + 1)
+				var tex = load(frame_path)
+				if tex:
+					anim_tex.set_frame_texture(i, tex)
+					anim_tex.set_frame_duration(i, 1.0)
+		
+		Efecto.SUPERPOSICION:  # Effect 2
+			anim_tex.frames = 7
+			anim_tex.speed_scale = 4.0
+			for i in range(7):
+				var frame_path = "res://assets/cards/superposition/super%02d_v02.png" % (i + 1)
+				var tex = load(frame_path)
+				if tex:
+					anim_tex.set_frame_texture(i, tex)
+					anim_tex.set_frame_duration(i, 1.0)
+		
+		Efecto.AROUND_WORLD:  # Effect 3
+			# Single frame for around world - still show it
+			anim_tex.frames = 1
+			anim_tex.speed_scale = 1.0
+			var tex = load("res://assets/cards/around/around_v02.png")
+			if tex:
+				anim_tex.set_frame_texture(0, tex)
+		
+		Efecto.COUNTER:  # Effect 4 (NOT gate) - uses existing animation
+			anim_tex.frames = 5
+			anim_tex.speed_scale = 4.0
+			var not_frames = [
+				"res://assets/cards/not/not01_v02.png",
+				"res://assets/cards/not/not02_v02.png",
+				"res://assets/cards/not/not03_v02.png",
+				"res://assets/cards/not/not04_v02.png",
+				"res://assets/cards/not/not05_v02.png"
+			]
+			for i in range(5):
+				var tex = load(not_frames[i])
+				if tex:
+					anim_tex.set_frame_texture(i, tex)
+					anim_tex.set_frame_duration(i, 1.0)
+		
+		Efecto.REVELATION:  # Effect 5
+			# Only 2 frames for revelation (v04 and v05)
+			anim_tex.frames = 2
+			anim_tex.speed_scale = 3.0
+			var rev_frames = [
+				"res://assets/cards/revelation/revelation_v04.png",
+				"res://assets/cards/revelation/revelation_v05.png"
+			]
+			for i in range(2):
+				var tex = load(rev_frames[i])
+				if tex:
+					anim_tex.set_frame_texture(i, tex)
+					anim_tex.set_frame_duration(i, 1.0)
+		
+		_:  # Default - use NOT animation
+			return  # Keep existing texture from scene
+	
+	# Apply the animated texture
+	animated_quantum.texture = anim_tex
 
 func flip_card():
 	if not sprite or not sprite.material:

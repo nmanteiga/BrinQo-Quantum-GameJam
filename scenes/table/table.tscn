@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://ugthjc2fmrll" path="res://scenes/table/table.gd" id="1_wpgb8"]
 [ext_resource type="PackedScene" uid="uid://cpsfq4niew1e7" path="res://scenes/cards/card.tscn" id="2_qxbf1"]
 [ext_resource type="Texture2D" uid="uid://c6d4ofta0awia" path="res://assets/background/table_v02.png" id="3_0y6hh"]
-[ext_resource type="Texture2D" uid="uid://dx6oi56fp0wuk" path="res://assets/cards/back/back_v09.png" id="4_0y6hh"]
-[ext_resource type="Texture2D" uid="uid://dx7lytm5ijdvx" path="res://assets/cards/mazo_especial.png" id="4_vd5qv"]
+[ext_resource type="Texture2D" uid="uid://6cx4d046o4eu" path="res://assets/cards/back/back_v10.png" id="4_gelyt"]
+[ext_resource type="Texture2D" uid="uid://dam45vabjw8dy" path="res://assets/cards/back/back_v05.png" id="5_gelyt"]
 [ext_resource type="Texture2D" uid="uid://07pj6mmqsn30" path="res://assets/buttons/stop.png" id="6_gelyt"]
 [ext_resource type="AudioStream" uid="uid://dci3fqlfqwkct" path="res://assets/sounds/normal_cards/play.mp3" id="7_6tgsi"]
 [ext_resource type="AudioStream" uid="uid://d156es4c7pkne" path="res://assets/sounds/normal_cards/draw1.mp3" id="7_tg5vf"]
@@ -73,19 +73,21 @@ offset_left = -40.0
 offset_top = -136.0
 offset_right = 184.0
 offset_bottom = 144.0
-texture = ExtResource("4_0y6hh")
+texture = ExtResource("4_gelyt")
 expand_mode = 1
 stretch_mode = 4
 
 [node name="mazoEspecial" type="Area2D" parent="." unique_id=225839669]
-position = Vector2(1300, 526)
+position = Vector2(1461, 534)
 
-[node name="Sprite2D" type="Sprite2D" parent="mazoEspecial" unique_id=359631183]
-position = Vector2(-0.5000167, -6.499992)
-scale = Vector2(2.269841, 2.3088236)
-texture = ExtResource("4_vd5qv")
-hframes = 5
-frame = 4
+[node name="TextureRect" type="TextureRect" parent="mazoEspecial" unique_id=1484686388]
+offset_left = -29.0
+offset_top = -134.0
+offset_right = 171.0
+offset_bottom = 146.0
+texture = ExtResource("5_gelyt")
+expand_mode = 1
+stretch_mode = 4
 
 [node name="Descartes1" type="Node2D" parent="." unique_id=1941461803]
 position = Vector2(832, 576)
@@ -110,6 +112,7 @@ position = Vector2(-22, -34.5)
 shape = SubResource("RectangleShape2D_tg5vf")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=807943530]
+visible = false
 
 [node name="BotonDebug" type="Button" parent="CanvasLayer" unique_id=291840358]
 visible = false

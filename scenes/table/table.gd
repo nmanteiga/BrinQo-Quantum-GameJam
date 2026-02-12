@@ -251,6 +251,10 @@ func robar_carta_cuantica(es_jugador: bool):
 		anim.setup_quantum(efecto, 1 if es_jugador else 2)
 		anim.face_up = true; anim.update_visuals()
 		
+		# Show shadow for quantum card display
+		if anim.has_method("show_shadow"):
+			anim.show_shadow()
+		
 		var centro = get_viewport_rect().size / 2
 		var dest = centro + (Vector2(0, 50) if es_jugador else Vector2(0, -50))
 		var tween = create_tween()
