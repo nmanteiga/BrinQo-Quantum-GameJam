@@ -112,11 +112,24 @@ func jugar_carta_en_mesa(carta: Carta, zona: Node2D):
 	var dest = zona_juego_p1.global_position if carta.controlled_by_player == 1 else zona_juego_p2.global_position
 	if carta.controlled_by_player == 1: carta_jugada_p1 = carta
 	else: carta_jugada_p2 = carta
+	
+	# Calculate z_index based on existing discard pile to ensure this card is on top from the start
+	var lista = descartes_p1 if carta.controlled_by_player == 1 else descartes_p2
+	var base_z = 20
+	var new_z = base_z + lista.size()  # Will be on top of existing discards
+	carta.z_index = new_z
+	
+	# Reset scale to base (remove any hover scaling)
+	carta.scale = carta.base_scale
+	
+	# Move to front in sibling order immediately
+	if carta.has_method("move_to_front"):
+		carta.move_to_front()
+	
 	audio.play()
 	var tween = create_tween()
 	tween.tween_property(carta, "global_position", dest, 0.2)
 	tween.parallel().tween_property(carta, "rotation_degrees", 0, 0.2)
-	carta.z_index = 5 
 	if carta.has_node("CollisionShape2D"): carta.get_node("CollisionShape2D").disabled = true 
 	
 	var slots = slots_jugador if carta.controlled_by_player == 1 else slots_rival
@@ -162,15 +175,36 @@ func resolver_ronda():
 
 func gestionar_descarte(carta: Carta, id: int):
 	var lista = descartes_p1 if id == 1 else descartes_p2
+
+	# CRITICAL: Set z_index and sibling order IMMEDIATELY before appending
+	var base_z = 20
+	var new_z = base_z + lista.size()  # Calculate z for the new card
+	
+	if is_instance_valid(carta):
+		carta.z_index = new_z
+		# Move to front in sibling order immediately
+		if carta.has_method("move_to_front"):
+			carta.move_to_front()
+		elif carta.has_method("raise"):
+			carta.call("raise")
+
+	# Append the new card
 	lista.append(carta)
+
+	# Keep pile size bounded and remove old visuals
 	if lista.size() > 2:
 		var vieja = lista.pop_front()
 		if is_instance_valid(vieja): vieja.queue_free()
 
+	# Update z_index for all cards to maintain order after potential removals
+	for i in range(lista.size()):
+		lista[i].z_index = base_z + i
+	
+	print("DEBUG gestionar_descarte P%d: lista size = %d, new card z = %d" % [id, lista.size(), carta.z_index if is_instance_valid(carta) else -1])
+
 	var tween = create_tween()
 	tween.tween_property(carta, "rotation_degrees", randf_range(-10, 10), 0.3)
 	tween.parallel().tween_property(carta, "modulate", Color(0.7, 0.7, 0.7), 0.3)
-	for i in range(lista.size()): lista[i].z_index = i
 
 func rellenar_manos_y_seguir():
 	if fase_actual == Fase.GAME_OVER and ronda_actual > MIN_RONDAS: return
@@ -247,7 +281,7 @@ func robar_carta_cuantica(es_jugador: bool):
 		add_child(anim)
 		var origen = mazo_especial_visual.global_position if mazo_especial_visual else mazo_visual.global_position
 		anim.global_position = origen
-		anim.scale = Vector2(0.5, 0.5); anim.z_index = 2 
+		anim.scale = Vector2(0.5, 0.5); anim.z_index = 100 
 		anim.setup_quantum(efecto, 1 if es_jugador else 2)
 		anim.face_up = true; anim.update_visuals()
 		
@@ -259,14 +293,16 @@ func robar_carta_cuantica(es_jugador: bool):
 			anim.show_shadow()
 		
 		var centro = get_viewport_rect().size / 2
-		var dest = centro + (Vector2(0, 50) if es_jugador else Vector2(0, -50))
+		var dest = centro + (Vector2(0, 160) if es_jugador else Vector2(0, -180))
 		var tween = create_tween()
 		tween.tween_property(anim, "global_position", dest, 0.6).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
-		tween.parallel().tween_property(anim, "scale", Vector2(0.6, 0.6), 0.6) 
+		# Jugador: zoom grande (0.6), Rival: tamaño más pequeño sin zoom (0.4)
+		var target_scale = Vector2(0.6, 0.6) if es_jugador else Vector2(0.3, 0.3)
+		tween.parallel().tween_property(anim, "scale", target_scale, 0.6)
 		await tween.finished
 		
 		if fase_actual == Fase.GAME_OVER and ronda_actual > MIN_RONDAS: return
-		await get_tree().create_timer(3.0).timeout 
+		await get_tree().create_timer(3.0).timeout
 		
 		# Dissolve effect before removing card
 		var sprite_node = anim.sprite
@@ -318,13 +354,13 @@ func robar_carta_cuantica(es_jugador: bool):
 		anim.queue_free()
 	
 	# Apply quantum logic after animation
-	if es_jugador:
-		match efecto:
-			1: iniciar_efecto_entrelazado()
-			2: iniciar_efecto_superposicion()
-			3: efecto_around_the_world(); await get_tree().create_timer(1).timeout; pasar_a_turno_rival_cuantico()
-			4: efecto_not_cuantico(true); await get_tree().create_timer(1).timeout; pasar_a_turno_rival_cuantico()
-			5: await iniciar_efecto_revelation(); pasar_a_turno_rival_cuantico()
+		if es_jugador:
+			match efecto:
+				1: iniciar_efecto_entrelazado()
+				2: iniciar_efecto_superposicion()
+				3: efecto_around_the_world(); await get_tree().create_timer(1).timeout; await pasar_a_turno_rival_cuantico()
+				4: efecto_not_cuantico(true); await get_tree().create_timer(1).timeout; await pasar_a_turno_rival_cuantico()
+				5: await iniciar_efecto_revelation(); await pasar_a_turno_rival_cuantico()
 	else:
 		match efecto:
 			1: ia_efecto_entrelazado()
@@ -336,7 +372,13 @@ func robar_carta_cuantica(es_jugador: bool):
 		if efecto != 3 and efecto != 4 and efecto != 5:
 			await get_tree().create_timer(1).timeout
 		finalizar_fase_cuantica()
-
+		
+func finalizar_fase_cuantica():
+	limpiar_preview()
+	fase_actual = Fase.SELECCION
+	estado_efecto_actual = EfectoCuantico.NINGUNO
+	mirando_carta = false
+	
 func iniciar_efecto_entrelazado():
 	estado_efecto_actual = EfectoCuantico.SELECCIONAR_ENTRELAZADO_PROPIA
 
@@ -368,6 +410,7 @@ func gestionar_input_efectos(carta: Carta):
 				limpiar_estado_cuantico(carta)
 				carta_seleccionada_efecto = carta
 				carta.aplicar_efecto_visual_cuantico(Color.CYAN)
+				carta.show_entanglement_highlight()
 				estado_efecto_actual = EfectoCuantico.SELECCIONAR_ENTRELAZADO_RIVAL
 				
 		EfectoCuantico.SELECCIONAR_ENTRELAZADO_RIVAL:
@@ -383,15 +426,14 @@ func gestionar_input_efectos(carta: Carta):
 				# visuales
 				carta.aplicar_efecto_visual_cuantico(Color.CYAN)
 				carta_seleccionada_efecto.aplicar_efecto_visual_cuantico(Color.CYAN)
+				
+				# Add highlights to both cards
+				carta.show_entanglement_highlight()
+				carta_seleccionada_efecto.show_entanglement_highlight()
+				
 				carta_seleccionada_efecto = null
 				estado_efecto_actual = EfectoCuantico.NINGUNO
-				pasar_a_turno_rival_cuantico()
-				
-		EfectoCuantico.SELECCIONAR_SUPERPOSICION:
-			if carta.controlled_by_player == 1:
-				# limpiamos antes de aplicar
-				limpiar_estado_cuantico(carta)
-				
+				await pasar_a_turno_rival_cuantico()
 				carta_seleccionada_efecto = carta
 				carta.aplicar_efecto_visual_cuantico(Color.PURPLE)
 				estado_efecto_actual = EfectoCuantico.SELECCIONAR_MONTON_SUPERPOSICION
@@ -416,11 +458,11 @@ func aplicar_superposicion_monton(lista_descartes: Array):
 		
 		carta_seleccionada_efecto = null
 		estado_efecto_actual = EfectoCuantico.NINGUNO
-		pasar_a_turno_rival_cuantico()
+	await pasar_a_turno_rival_cuantico()
 
-func pasar_a_turno_rival_cuantico(): robar_carta_cuantica(false)
-
-func finalizar_fase_cuantica():
+func pasar_a_turno_rival_cuantico(): 
+	await get_tree().create_timer(1.0).timeout
+	robar_carta_cuantica(false)
 	limpiar_preview()
 	fase_actual = Fase.SELECCION
 	estado_efecto_actual = EfectoCuantico.NINGUNO
@@ -504,6 +546,10 @@ func ia_efecto_entrelazado():
 		limpiar_estado_cuantico(c2)
 		c1.entrelazada_con = c2; c2.entrelazada_con = c1
 		c1.aplicar_efecto_visual_cuantico(Color.CYAN); c2.aplicar_efecto_visual_cuantico(Color.CYAN)
+		
+		# Add highlights to show the linking
+		c1.show_entanglement_highlight()
+		c2.show_entanglement_highlight()
 
 func ia_efecto_superposicion():
 	if slots_rival.size() > 0:
@@ -577,7 +623,7 @@ func animacion_ia_mirando():
 func start_drag(c): 
 	carta_en_movimiento = c
 	c.scale = c.base_scale * 1.2
-	c.z_index = 20
+	c.z_index = 50  # High enough to be above discards (20-40) but below quantum cards (100)
 	if c.has_method("show_shadow"):
 		c.show_shadow()
 
@@ -616,7 +662,13 @@ func on_hovered_off_card(c):
 		else: carta_hovered = null
 
 func highlight_card(c, h): 
-	if is_instance_valid(c) and c is Carta: 
+	if is_instance_valid(c) and c is Carta:
+		# No interrumpir cartas en animación (z_index == 100 indica carta cuántica en display)
+		if c.z_index == 100:
+			return
+		# No modificar cartas en zona de descarte (z_index 20-40)
+		if c.z_index >= 20 and c.z_index <= 40:
+			return
 		c.scale = c.base_scale * (1.2 if h else 1.0); c.z_index = 10 if h else 1
 
 func check_carta():
@@ -739,7 +791,7 @@ func mostrar_cartas_preview(lista_origen: Array, posicion_base: Vector2):
 		var offset_y = -120 - (i * 160)
 		visual.global_position = posicion_base + Vector2(0, offset_y)
 		visual.scale = Vector2(0.3, 0.3)
-		visual.z_index = 200 
+		visual.z_index = 250  # High z_index to appear above everything else
 		visual.setup_card(data.suit * 13 + data.value, 0)
 		visual.face_up = true; visual.update_visuals()
 		if visual.has_node("CollisionShape2D"): visual.get_node("CollisionShape2D").disabled = true

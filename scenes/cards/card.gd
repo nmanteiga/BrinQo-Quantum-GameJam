@@ -287,6 +287,26 @@ func flip_card():
 func aplicar_efecto_visual_cuantico(color: Color):
 	if sprite: sprite.modulate = color
 
+func show_entanglement_highlight():
+	print("Highlighting card: ", value, " of suit ", suit)
+	# Use scale pulse effect since shader interferes with color modulation
+	var original_scale = scale
+	var tween = create_tween()
+	tween.set_parallel(false)
+	
+	# Pulse 3 times
+	for i in range(3):
+		tween.tween_property(self, "scale", original_scale * 1.15, 0.15)
+		tween.tween_property(self, "scale", original_scale, 0.15)
+	
+	# Also try to flash a white overlay on the sprite
+	if sprite:
+		var color_tween = create_tween()
+		color_tween.set_parallel(false)
+		for i in range(3):
+			color_tween.tween_property(sprite, "self_modulate", Color(3, 3, 3, 1), 0.15)
+			color_tween.tween_property(sprite, "self_modulate", Color.WHITE, 0.15)
+
 # eventos de ratón
 func _on_input_event(viewport, event, shape_idx): pass 
 
