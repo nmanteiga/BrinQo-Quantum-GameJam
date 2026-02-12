@@ -2,11 +2,7 @@
 
 [sub_resource type="AudioEffectFilter" id="AudioEffectFilter_j3pel"]
 resource_name = "Filter"
-filter_type = 0
 cutoff_hz = 800.0
-resonance = 0.5
-gain = 1.0
-db = 0
 
 [resource]
 bus/0/effect/0/effect = SubResource("AudioEffectFilter_j3pel")

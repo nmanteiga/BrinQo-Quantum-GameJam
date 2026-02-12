@@ -2,7 +2,7 @@ extends Area2D
 class_name Carta
 
 enum Tipo { NORMAL, QUANTUM }
-enum Efecto { NINGUNO, ENTRELAZADO, SUPERPOSICION, AROUND_WORLD, COUNTER }
+enum Efecto { NINGUNO, ENTRELAZADO, SUPERPOSICION, AROUND_WORLD, COUNTER, REVELATION }
 
 @export var textura_especial : Texture2D
 @onready var shadow: TextureRect = $Shadow
@@ -39,14 +39,12 @@ func _ready():
 	scale = base_scale
 	face_up = false 
 	
-	# Duplicate material so each card has its own instance
 	if sprite and sprite.material:
 		sprite.material = sprite.material.duplicate()
 	
 	if get_parent().has_method("connect_card_signals"):
 		get_parent().connect_card_signals(self)
 	
-	# Hide shadow by default
 	if shadow:
 		shadow.visible = false
 	
@@ -56,16 +54,10 @@ func _ready():
 func _process(delta):
 	if is_mouse_hovering and sprite and sprite.material:
 		var mouse_pos = get_local_mouse_position()
-		# Normalize mouse position relative to card size
-		# Card is 760x1072, centered at origin
-		var norm_x = clamp(mouse_pos.x / 380.0, -1.0, 1.0)  # -1 to 1
-		var norm_y = clamp(mouse_pos.y / 536.0, -1.0, 1.0)  # -1 to 1
-		
-		# Apply tilt: x position affects y_rot, y position affects x_rot
+		var norm_x = clamp(mouse_pos.x / 380.0, -1.0, 1.0) 
+		var norm_y = clamp(mouse_pos.y / 536.0, -1.0, 1.0) 
 		var target_y_rot = norm_x * tilt_strength
 		var target_x_rot = -norm_y * tilt_strength  
-		
-		# Smoothly interpolate to target rotation
 		var current_y = sprite.material.get_shader_parameter("y_rot")
 		var current_x = sprite.material.get_shader_parameter("x_rot")
 		
@@ -113,7 +105,7 @@ func get_card_texture_path() -> String:
 		return "res://assets/cards/back/back_v01.png"
 	
 	var suit_name = get_suit_name(suit)
-	var card_number = value + 1  # 0-12 becomes 1-13
+	var card_number = value + 1 
 	return "res://assets/cards/%s/%s_%02d_v01.png" % [suit_name, suit_name, card_number]
 
 func update_visuals():
@@ -124,25 +116,12 @@ func update_visuals():
 		var texture = load(texture_path)
 		if texture:
 			sprite.texture = texture
-			print("Loaded texture: ", texture_path, " face_up: ", face_up)
 		else:
 			print("Failed to load texture: ", texture_path)
 	
 	else:
 		if textura_especial:
 			sprite.texture = textura_especial
-			# For quantum cards, you might need to adjust this
-			# if textura_especial is also a sprite sheet
-			if face_up:
-				match efecto_especial:
-					Efecto.ENTRELAZADO: pass  # Load specific quantum card texture
-					Efecto.SUPERPOSICION: pass
-					Efecto.AROUND_WORLD: pass
-					4: pass  # NOT
-					_: pass
-			else:
-				# Load back of quantum card
-				pass
 
 func flip_card():
 	if not sprite or not sprite.material:
@@ -152,7 +131,6 @@ func flip_card():
 	tween.set_ease(Tween.EASE_IN_OUT)
 	tween.set_trans(Tween.TRANS_CUBIC)
 	
-	# Rotate to 90 degrees (edge-on, card is invisible)
 	flip1.pitch_scale = randf_range(0.8, 1.2)
 	flip1.play()
 	tween.tween_method(
@@ -162,19 +140,14 @@ func flip_card():
 		0.15
 	)
 	
-	# At 90 degrees, swap the texture
 	tween.tween_callback(func():
 		face_up = !face_up
-		print("Flipping card, new face_up: ", face_up)
 		update_visuals()
-		# Force the texture to update
 		if sprite:
 			sprite.queue_redraw()
 	)
 	
-	# Small pause at 90 degrees to ensure texture loads
 	tween.tween_interval(0.01)
-	# Rotate from -90 to 0 (coming from the other side)
 	tween.tween_method(
 		func(angle): sprite.material.set_shader_parameter("y_rot", angle),
 		-90.0,
@@ -193,7 +166,6 @@ func _on_mouse_entered() -> void:
 
 func _on_mouse_exited() -> void:
 	is_mouse_hovering = false
-	# Reset rotation smoothly
 	if sprite and sprite.material:
 		create_tween().tween_method(reset_rotation, 1.0, 0.0, 0.2)
 	emit_signal("hovered_off", self)
@@ -209,28 +181,17 @@ func handle_shadow(delta: float) -> void:
 	if not shadow or not shadow.visible:
 		return
 		
-	# Get the actual viewport the card is in
 	var viewport = get_viewport()
 	if not viewport:
 		return
 		
 	var viewport_size = viewport.get_visible_rect().size
 	var center_x = viewport_size.x / 2.0
-	
-	# Distance from center of viewport to card position
 	var distance: float = global_position.x - center_x
-	
-	# Calculate weight (0 at center, 1 at edges)
 	var weight = clamp(abs(distance / center_x), 0.0, 1.0)
-	
-	# Shadow offsets opposite to the direction from center
 	var target_offset = -sign(distance) * max_offset_shadow * weight
-	
-	# Store original offsets (from scene)
 	var base_left = -381.0
 	var base_right = 379.0
-	
-	# Apply offset by shifting both left and right equally
 	var current_offset = (shadow.offset_left - base_left)
 	var new_offset = lerp(current_offset, target_offset, delta * 10.0)
 	
@@ -238,9 +199,7 @@ func handle_shadow(delta: float) -> void:
 	shadow.offset_right = base_right + new_offset
 
 func show_shadow():
-	if shadow:
-		shadow.visible = true
+	if shadow: shadow.visible = true
 
 func hide_shadow():
-	if shadow:
-		shadow.visible = false
+	if shadow: shadow.visible = false

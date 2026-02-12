@@ -32,6 +32,7 @@ var carta_jugada_p1 : Carta = null
 var carta_jugada_p2 : Carta = null
 var ronda_actual : int = 1
 const MAX_RONDAS : int = 10
+const MIN_RONDAS : int = 3
 var cartas_vistas_ronda : int = 0
 var mirando_carta : bool = false 
 var carta_en_movimiento = null
@@ -106,9 +107,6 @@ func colocar_carta(carta, marker, idx):
 	tween.tween_property(carta, "position", destino, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	tween.parallel().tween_callback(func(): carta.z_index = 1).set_delay(0.5)
 
-	
-
-
 # --- JUEGO ---
 func jugar_carta_en_mesa(carta: Carta, zona: Node2D):
 	var dest = zona_juego_p1.global_position if carta.controlled_by_player == 1 else zona_juego_p2.global_position
@@ -131,30 +129,31 @@ func jugar_carta_en_mesa(carta: Carta, zona: Node2D):
 
 func turno_rival_ia_jugar():
 	await get_tree().create_timer(1.0).timeout 
-	if fase_actual == Fase.GAME_OVER: return 
+	if fase_actual == Fase.GAME_OVER and ronda_actual > MIN_RONDAS: return
 	
 	if slots_rival.size() > 0:
-		jugar_carta_en_mesa(slots_rival.values().pick_random(), zona_juego_p2)
+		# IA INTELIGENTE: Busca la peor carta para jugar
+		var carta_a_jugar = obtener_peor_carta_ia()
+		if carta_a_jugar:
+			jugar_carta_en_mesa(carta_a_jugar, zona_juego_p2)
 
 func resolver_ronda():
 	await get_tree().create_timer(1.0).timeout
-	if fase_actual == Fase.GAME_OVER: return
+	if fase_actual == Fase.GAME_OVER and ronda_actual > MIN_RONDAS: return
 	
 	if carta_jugada_p1: 
 		carta_jugada_p1.face_up = false
 		if carta_jugada_p1.es_superposicion: colapsar_superposicion(carta_jugada_p1) 
 		resolver_entrelazamiento(carta_jugada_p1) 
-		#carta_jugada_p1.update_visuals()
 		carta_jugada_p1.flip_card()
 	if carta_jugada_p2: 
 		carta_jugada_p2.face_up = false
 		if carta_jugada_p2.es_superposicion: colapsar_superposicion(carta_jugada_p2)
 		resolver_entrelazamiento(carta_jugada_p2)
-		#carta_jugada_p2.update_visuals()
 		carta_jugada_p2.flip_card()
 	
 	await get_tree().create_timer(2.0).timeout 
-	if fase_actual == Fase.GAME_OVER: return
+	if fase_actual == Fase.GAME_OVER and ronda_actual > MIN_RONDAS: return
 	
 	gestionar_descarte(carta_jugada_p1, 1)
 	gestionar_descarte(carta_jugada_p2, 2)
@@ -174,7 +173,7 @@ func gestionar_descarte(carta: Carta, id: int):
 	for i in range(lista.size()): lista[i].z_index = i
 
 func rellenar_manos_y_seguir():
-	if fase_actual == Fase.GAME_OVER: return
+	if fase_actual == Fase.GAME_OVER and ronda_actual > MIN_RONDAS: return
 	if ronda_actual >= MAX_RONDAS: finalizar_partida(); return
 	ronda_actual += 1
 	actualizar_ui_ronda()
@@ -191,7 +190,7 @@ func rellenar_manos_y_seguir():
 
 # --- INPUT CRÍTICO ---
 func _input(event):
-	if fase_actual == Fase.GAME_OVER or fase_actual == Fase.ANIMACION: return
+	if (fase_actual == Fase.GAME_OVER and ronda_actual > MIN_RONDAS) or fase_actual == Fase.ANIMACION: return
 	
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
 		if fase_actual == Fase.EVENTO_ESPECIAL and estado_efecto_actual == EfectoCuantico.SELECCIONAR_MONTON_SUPERPOSICION:
@@ -224,7 +223,7 @@ func _input(event):
 
 # --- CUÁNTICA ---
 func robar_carta_cuantica(es_jugador: bool):
-	if fase_actual == Fase.GAME_OVER: return
+	if fase_actual == Fase.GAME_OVER and ronda_actual > MIN_RONDAS: return
 	var roll = randf()
 	var efecto = 4 
 	
@@ -235,8 +234,9 @@ func robar_carta_cuantica(es_jugador: bool):
 		else: efecto = 1 
 	else:
 		if roll < 0.05: efecto = 3 
-		elif roll < 0.40: efecto = 4 
-		elif roll < 0.70: efecto = 1 
+		elif roll < 0.35: efecto = 4
+		elif roll < 0.55: efecto = 5 # Revelation
+		elif roll < 0.80: efecto = 1 
 		else: 
 			if descartes_p1.size() + descartes_p2.size() >= 2: efecto = 2
 			else: efecto = 4
@@ -258,7 +258,7 @@ func robar_carta_cuantica(es_jugador: bool):
 		tween.parallel().tween_property(anim, "scale", Vector2(1.5, 1.5), 0.6) 
 		await tween.finished
 		
-		if fase_actual == Fase.GAME_OVER: return
+		if fase_actual == Fase.GAME_OVER and ronda_actual > MIN_RONDAS: return
 		await get_tree().create_timer(3.0).timeout 
 		
 		var tween_bye = create_tween()
@@ -275,13 +275,17 @@ func aplicar_logica_cuantica(efecto: int, es_jugador: bool):
 			2: iniciar_efecto_superposicion()
 			3: efecto_around_the_world(); await get_tree().create_timer(1).timeout; pasar_a_turno_rival_cuantico()
 			4: efecto_not_cuantico(true); await get_tree().create_timer(1).timeout; pasar_a_turno_rival_cuantico()
+			5: await iniciar_efecto_revelation(); pasar_a_turno_rival_cuantico()
 	else:
 		match efecto:
 			1: ia_efecto_entrelazado()
 			2: ia_efecto_superposicion()
 			3: efecto_around_the_world()
 			4: efecto_not_cuantico(false)
-		await get_tree().create_timer(1).timeout
+			5: await ia_efecto_revelation()
+		
+		if efecto != 3 and efecto != 4 and efecto != 5:
+			await get_tree().create_timer(1).timeout
 		finalizar_fase_cuantica()
 
 func iniciar_efecto_entrelazado():
@@ -453,7 +457,51 @@ func ia_efecto_entrelazado():
 		c1.aplicar_efecto_visual_cuantico(Color.CYAN); c2.aplicar_efecto_visual_cuantico(Color.CYAN)
 
 func ia_efecto_superposicion():
-	if slots_rival.size()>0: aplicar_superposicion(slots_rival.values().pick_random())
+	if slots_rival.size() > 0:
+		# IA INTELIGENTE: Aplica superposición a su peor carta
+		var peor_carta = obtener_peor_carta_ia()
+		if peor_carta:
+			aplicar_superposicion(peor_carta)
+
+# --- FUNCIONES NUEVAS REVELATION ---
+func aplicar_revelation_temporal(carta: Carta):
+	if not is_instance_valid(carta): return
+	
+	mirando_carta = true # Bloquea interacciones
+	
+	if carta.es_superposicion: colapsar_superposicion(carta)
+
+	carta.flip_card()
+	await get_tree().create_timer(3.0).timeout
+	
+	if is_instance_valid(carta) and fase_actual != Fase.GAME_OVER:
+		carta.flip_card() 
+		await get_tree().create_timer(0.3).timeout
+		
+	mirando_carta = false 
+
+func iniciar_efecto_revelation():
+	var candidatos : Array[Carta] = []
+	for c in slots_jugador.values(): if not c.face_up: candidatos.append(c)
+	for c in slots_rival.values(): if not c.face_up: candidatos.append(c)
+		
+	if candidatos.size() > 0:
+		var elegida = candidatos.pick_random()
+		await aplicar_revelation_temporal(elegida)
+	else:
+		await get_tree().create_timer(1.0).timeout
+
+func ia_efecto_revelation():
+	var candidatos : Array[Carta] = []
+	for c in slots_jugador.values(): if not c.face_up: candidatos.append(c)
+	if candidatos.is_empty():
+		for c in slots_rival.values(): if not c.face_up: candidatos.append(c)
+			
+	if candidatos.size() > 0:
+		var elegida = candidatos.pick_random()
+		await aplicar_revelation_temporal(elegida)
+	else:
+		await get_tree().create_timer(1.0).timeout
 
 
 # UTILS
@@ -461,17 +509,13 @@ func activar_vista_temporal(c):
 	mirando_carta = true; cartas_vistas_ronda += 1; c.face_up = false
 	resolver_entrelazamiento(c); if c.es_superposicion: colapsar_superposicion(c)
 	c.flip_card()
-	#c.update_visuals()
-	#var t = create_tween(); t.tween_property(c, "scale", c.base_scale * 1.2, 0.2)
 	await get_tree().create_timer(2).timeout
-	#c.face_up = false; c.update_visuals()
-	#t = create_tween(); t.tween_property(c, "scale", c.base_scale, 0.2)
 	c.flip_card()
 	animacion_ia_mirando()
 
 func animacion_ia_mirando():
 	await get_tree().create_timer(0.5).timeout
-	if fase_actual == Fase.GAME_OVER: return
+	if fase_actual == Fase.GAME_OVER and ronda_actual > MIN_RONDAS: return
 	if slots_rival.size() > 0:
 		var c = slots_rival.values().pick_random()
 		var t = create_tween()
@@ -548,10 +592,33 @@ func check_slot_carta():
 	return null
 
 func obtener_poder_carta(v): return 14 if v == 0 else v + 1
-func actualizar_ui_ronda(): if label_ronda: label_ronda.text = "Ronda: " + str(ronda_actual) + " / " + str(MAX_RONDAS)
+
+func obtener_peor_carta_ia() -> Carta:
+	var candidatos = slots_rival.values()
+	if candidatos.is_empty(): return null
+	
+	var peor_carta = candidatos[0]
+	var menor_poder = 999
+	
+	for c in candidatos:
+		var poder = obtener_poder_carta(c.value)
+		if poder < menor_poder:
+			menor_poder = poder
+			peor_carta = c
+			
+	return peor_carta
+
+func actualizar_ui_ronda(): 
+	if label_ronda: 
+		label_ronda.text = "Ronda: " + str(ronda_actual) + " / " + str(MAX_RONDAS)
+	
+	if boton_plantarse:
+		boton_plantarse.disabled = (ronda_actual < MIN_RONDAS)
 
 func finalizar_partida():
+	if ronda_actual < MIN_RONDAS: return 
 	fase_actual = Fase.GAME_OVER
+	
 	carta_en_movimiento = null; mirando_carta = false; carta_hovered = null
 	
 	for i in range(4):

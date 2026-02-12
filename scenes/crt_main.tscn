@@ -43,7 +43,6 @@ size = Vector2i(1920, 1080)
 [node name="table" parent="SubViewport" unique_id=12726856 instance=ExtResource("1_o7dqw")]
 
 [node name="MusicPlayer" type="AudioStreamPlayer2D" parent="SubViewport" unique_id=1923845612]
-process_mode = 0
 stream = ExtResource("4_music")
 volume_db = -0.655
 autoplay = true
