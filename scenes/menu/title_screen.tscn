@@ -58,14 +58,6 @@ shader_parameter/border_color = Color(1, 1, 1, 0.8)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ib7db"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_mgrm8"]
-shader = ExtResource("3_s4lrb")
-shader_parameter/chaos = 10.000000475
-shader_parameter/border_thickness = 3.0
-shader_parameter/border_color = Color(1, 1, 1, 0.8)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s4lrb"]
-
 [node name="TitleScreen" type="Control" unique_id=1593408701]
 custom_minimum_size = Vector2(1920, 1080)
 layout_mode = 3
@@ -118,9 +110,9 @@ script = ExtResource("5_btndbg")
 material = SubResource("ShaderMaterial_e54dn")
 layout_mode = 0
 offset_left = 830.0
-offset_top = 900.0
+offset_top = 806.0
 offset_right = 1130.0
-offset_bottom = 975.0
+offset_bottom = 881.0
 mouse_filter = 2
 
 [node name="ExitButton" type="Button" parent="ExitButtonPanel" unique_id=1945000106]
@@ -133,29 +125,6 @@ theme_override_styles/disabled = SubResource("StyleBoxEmpty_u26n3")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_ib7db")
 text = "Quit game"
 script = ExtResource("5_btndbg")
-
-[node name="TutorialButtonPanel" type="PanelContainer" parent="." unique_id=1081178227]
-material = SubResource("ShaderMaterial_mgrm8")
-layout_mode = 0
-offset_left = 830.0
-offset_top = 800.0
-offset_right = 1130.0
-offset_bottom = 875.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_s4lrb")
-
-[node name="TutorialButton" type="Button" parent="TutorialButtonPanel" unique_id=1542368251]
-layout_mode = 2
-theme_override_font_sizes/font_size = 28
-theme_override_styles/normal = SubResource("StyleBoxEmpty_s4lrb")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_mgrm8")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_dc4i4")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_e54dn")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_3yumr")
-action_mode = 0
-text = "Tutorial
-"
-icon_alignment = 1
 
 [node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=1844081594]
 layout_mode = 0
