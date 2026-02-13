@@ -364,18 +364,7 @@ func finalizar_fase_cuantica():
 	limpiar_preview()
 	fase_actual = Fase.SELECCION
 	estado_efecto_actual = EfectoCuantico.NINGUNO
-	mirando_carta = false 
-	
-	if ronda_actual < MIN_RONDAS: return 
-	
-	fase_actual = Fase.GAME_OVER
-	carta_en_movimiento = null
-	carta_hovered = null
 	mirando_carta = false
-	
-	if boton_plantarse: boton_plantarse.disabled = true
-	
-	
 	
 func iniciar_efecto_entrelazado():
 	estado_efecto_actual = EfectoCuantico.SELECCIONAR_ENTRELAZADO_PROPIA
