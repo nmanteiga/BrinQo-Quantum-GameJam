@@ -6,11 +6,23 @@ extends Node2D
 @onready var close_button = $SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/CloseButton
 @onready var table = $SubViewport/table
 @onready var music_player = $SubViewport/MusicPlayer
+@onready var turn_on_flash = $SubViewport/UILayer/TurnOnFlash
+@onready var black_bg = $SubViewport/UILayer/BlackBackground
 
 var currently_hovered = null
 var is_paused = false
 
 func _ready():
+	black_bg.visible = true
+	turn_on_flash.visible = true
+	turn_on_flash.scale = Vector2(0.0, 0.005) 
+	var tween = create_tween()
+	tween.tween_property(turn_on_flash, "scale:x", 1.0, 0.15).set_ease(Tween.EASE_OUT)
+	tween.tween_property(turn_on_flash, "scale:y", 1.0, 0.2).set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_callback(func(): black_bg.visible = false) # Quitamos lo negro justo cuando el blanco llena todo
+	tween.tween_property(turn_on_flash, "modulate:a", 0.0, 0.3) # El blanco se vuelve transparente
+	tween.tween_callback(func(): turn_on_flash.visible = false)
+	
 	help_button.pressed.connect(_on_help_button_pressed)
 	close_button.pressed.connect(_on_close_button_pressed)
 	if music_player:

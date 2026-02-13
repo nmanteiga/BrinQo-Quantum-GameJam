@@ -1,0 +1,177 @@
+[gd_scene format=3 uid="uid://lhq6ggjgaf71"]
+
+[ext_resource type="Script" uid="uid://do3c8klutomjs" path="res://title_screen.gd" id="1_fgkus"]
+[ext_resource type="FontFile" uid="uid://bfu4fc1t3nsdj" path="res://assets/VT323/VT323-Regular.ttf" id="1_mgrm8"]
+[ext_resource type="Shader" uid="uid://b5gt830h2j8xd" path="res://scenes/menu/fondo_estrelas.gdshader" id="2_sa3yf"]
+[ext_resource type="Shader" uid="uid://dbt0li63mm2lh" path="res://scenes/boton-menu-principal.gdshader" id="3_s4lrb"]
+
+[sub_resource type="Theme" id="Theme_dc4i4"]
+default_font = ExtResource("1_mgrm8")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_sa3yf"]
+noise_type = 0
+frequency = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_s4lrb"]
+noise = SubResource("FastNoiseLite_sa3yf")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_s4lrb"]
+shader = ExtResource("2_sa3yf")
+shader_parameter/resolution = Vector2(600, 400)
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_s4lrb")
+shader_parameter/density = 20.0
+shader_parameter/rotation_speed = 0.03600004921000011
+shader_parameter/spiral_curve = 0.10000015050212065
+shader_parameter/center_offset = Vector2(0.5, 1)
+shader_parameter/layers = 5.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dc4i4"]
+shader = ExtResource("3_s4lrb")
+shader_parameter/chaos = 10.000000475
+shader_parameter/border_thickness = 3.0
+shader_parameter/border_color = Color(1, 1, 1, 0.8)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s4lrb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mgrm8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dc4i4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e54dn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3yumr"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_e54dn"]
+shader = ExtResource("3_s4lrb")
+shader_parameter/chaos = 10.0
+shader_parameter/border_thickness = 3.0
+shader_parameter/border_color = Color(1, 1, 1, 0.8)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cs5ya"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mykxm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tklts"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u26n3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ib7db"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mgrm8"]
+shader = ExtResource("3_s4lrb")
+shader_parameter/chaos = 10.000000475
+shader_parameter/border_thickness = 3.0
+shader_parameter/border_color = Color(1, 1, 1, 0.8)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s4lrb"]
+
+[node name="TitleScreen" type="Control" unique_id=1593408701 node_paths=PackedStringArray("start_button", "start_panel", "exit_button", "exit_panel", "tutorial_button", "tutorial_panel")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 2.0
+offset_right = 3.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_dc4i4")
+script = ExtResource("1_fgkus")
+start_button = NodePath("StartButtonPanel/StartButton")
+start_panel = NodePath("StartButtonPanel")
+exit_button = NodePath("ExitButtonPanel/ExitButton")
+exit_panel = NodePath("ExitButtonPanel")
+tutorial_button = NodePath("TutorialButtonPanel/TutorialButton")
+tutorial_panel = NodePath("TutorialButtonPanel")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=181645343]
+material = SubResource("ShaderMaterial_s4lrb")
+layout_mode = 0
+offset_left = -3.0
+offset_top = -2.0
+offset_right = 1917.0
+offset_bottom = 1078.0
+color = Color(0, 0, 0, 1)
+
+[node name="StartButtonPanel" type="PanelContainer" parent="." unique_id=1623213412]
+material = SubResource("ShaderMaterial_dc4i4")
+layout_mode = 1
+anchors_preset = -1
+offset_left = 830.0
+offset_top = 700.0
+offset_right = 1130.0
+offset_bottom = 775.0
+mouse_filter = 2
+
+[node name="StartButton" type="Button" parent="StartButtonPanel" unique_id=612307753]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxEmpty_s4lrb")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_mgrm8")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_dc4i4")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_e54dn")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_3yumr")
+action_mode = 0
+text = "Play game"
+icon_alignment = 1
+
+[node name="ExitButtonPanel" type="PanelContainer" parent="." unique_id=424800519]
+material = SubResource("ShaderMaterial_e54dn")
+layout_mode = 1
+anchors_preset = -1
+offset_left = 830.0
+offset_top = 900.0
+offset_right = 1130.0
+offset_bottom = 975.0
+mouse_filter = 2
+
+[node name="ExitButton" type="Button" parent="ExitButtonPanel" unique_id=1945000106]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxEmpty_cs5ya")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_mykxm")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_tklts")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_u26n3")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ib7db")
+text = "Quit game"
+
+[node name="TutorialButtonPanel" type="PanelContainer" parent="." unique_id=1081178227]
+material = SubResource("ShaderMaterial_mgrm8")
+layout_mode = 1
+anchors_preset = -1
+offset_left = 830.0
+offset_top = 800.0
+offset_right = 1130.0
+offset_bottom = 875.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_s4lrb")
+
+[node name="TutorialButton" type="Button" parent="TutorialButtonPanel" unique_id=1542368251]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxEmpty_s4lrb")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_mgrm8")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_dc4i4")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_e54dn")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_3yumr")
+action_mode = 0
+text = "Tutorial
+"
+icon_alignment = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=1844081594]
+layout_mode = 0
+offset_left = 7.0
+offset_top = 106.0
+offset_right = 1936.0
+offset_bottom = 506.0
+theme_override_font_sizes/normal_font_size = 200
+bbcode_enabled = true
+text = "[center][wave amp=50 freq=2 connected=1]Schrödinger's[/wave]
+[color=#2ecc71][shake rate=20 level=10]HAND[/shake][/color][/center]"
+fit_content = true
+scroll_active = false
+
+[connection signal="pressed" from="StartButtonPanel/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="ExitButtonPanel/ExitButton" to="." method="_on_exit_button_pressed"]

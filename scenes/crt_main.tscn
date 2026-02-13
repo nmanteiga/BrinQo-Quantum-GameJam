@@ -204,3 +204,17 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 28
 text = "Close (ESC)"
+
+[node name="BlackBackground" type="ColorRect" parent="SubViewport/UILayer" unique_id=702165317]
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 1)
+
+[node name="TurnOnFlash" type="ColorRect" parent="SubViewport/UILayer" unique_id=1928960778]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(960, 540)
+mouse_filter = 2
