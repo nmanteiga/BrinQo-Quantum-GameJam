@@ -211,7 +211,6 @@ func _input(event):
 	
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
 		
-		# superposición -> detectar clic en montones
 		if fase_actual == Fase.EVENTO_ESPECIAL and estado_efecto_actual == EfectoCuantico.SELECCIONAR_MONTON_SUPERPOSICION:
 			var mouse_pos = get_global_mouse_position()
 			var radio_detect = 150.0 
@@ -246,7 +245,7 @@ func robar_carta_cuantica(es_jugador: bool):
 	var roll = randf()
 	var efecto = 4 
 	
-	# probabilidades
+	# Probabilidades
 	if ronda_actual <= 2:
 		if roll < 0.05: efecto = 3
 		elif roll < 0.50: efecto = 4
@@ -260,7 +259,6 @@ func robar_carta_cuantica(es_jugador: bool):
 			if descartes_p1.size() + descartes_p2.size() >= 2: efecto = 2
 			else: efecto = 4
 	
-	# animación carta saliendo
 	if card_scene:
 		var anim = card_scene.instantiate()
 		add_child(anim)
@@ -284,13 +282,44 @@ func robar_carta_cuantica(es_jugador: bool):
 		if fase_actual == Fase.GAME_OVER and ronda_actual > MIN_RONDAS: return
 		await get_tree().create_timer(3.0).timeout
 		
-		# desvanecer carta cuántica
-		var tween_bye = create_tween()
-		tween_bye.tween_property(anim, "scale", Vector2(0,0), 0.3)
-		tween_bye.tween_callback(anim.queue_free)
-		await tween_bye.finished
+		var sprite_node = anim.sprite
+		var animated_node = anim.animated_quantum
+		var shadow_node = anim.shadow
+		var dissolve_ok = false
+		
+		if sprite_node and sprite_node.material:
+			var tween_dissolve = create_tween()
+			
+			# Disolver el sprite principal
+			tween_dissolve.tween_method(
+				func(val): sprite_node.material.set_shader_parameter("dissolve_value", val),
+				0.0, 1.0, 1.5
+			)
+			
+			# Disolver overlay animado
+			if animated_node and animated_node.visible and animated_node.material:
+				tween_dissolve.parallel().tween_method(
+					func(val): animated_node.material.set_shader_parameter("dissolve_value", val),
+					0.0, 1.0, 1.5
+				)
+			
+			# Disolver sombra
+			if shadow_node and shadow_node.visible and shadow_node.material:
+				tween_dissolve.parallel().tween_method(
+					func(val): shadow_node.material.set_shader_parameter("dissolve_value", val),
+					0.0, 1.0, 1.5
+				)
+			
+			await tween_dissolve.finished
+			dissolve_ok = true
+		
+		if not dissolve_ok:
+			var tween_bye = create_tween()
+			tween_bye.tween_property(anim, "scale", Vector2(0,0), 0.3)
+			await tween_bye.finished
+			
+		anim.queue_free()
 	
-		# --- APLICAR LÓGICA ---
 		if es_jugador:
 			match efecto:
 				1: iniciar_efecto_entrelazado()
@@ -299,19 +328,17 @@ func robar_carta_cuantica(es_jugador: bool):
 				4: await efecto_not_cuantico(true); await pasar_a_turno_rival_cuantico()
 				5: await iniciar_efecto_revelation(); await pasar_a_turno_rival_cuantico()
 		else:
-			# lógica IA
+			# Lógica IA
 			match efecto:
-				1: ia_efecto_entrelazado() # síncrono
-				2: ia_efecto_superposicion() # síncrono
-				3: efecto_around_the_world() # síncrono
-				4: await efecto_not_cuantico(false) # asíncrono (Animación)
-				5: await ia_efecto_revelation() # asíncrono (Animación)
+				1: ia_efecto_entrelazado() # Síncrono
+				2: ia_efecto_superposicion() # Síncrono
+				3: efecto_around_the_world() # Síncrono
+				4: await efecto_not_cuantico(false) # Asíncrono (Animación)
+				5: await ia_efecto_revelation() # Asíncrono (Animación)
 			
-			# pequeña espera si no fue una animación larga
 			if efecto != 3 and efecto != 4 and efecto != 5:
 				await get_tree().create_timer(1.0).timeout
 			
-			# flag siempre finalizar la fase
 			finalizar_fase_cuantica()
 		
 func finalizar_fase_cuantica():
@@ -346,6 +373,7 @@ func gestionar_input_efectos(carta: Carta):
 				limpiar_estado_cuantico(carta)
 				carta_seleccionada_efecto = carta
 				carta.aplicar_efecto_visual_cuantico(Color.CYAN)
+				# Llamar al highlight visual (Corregido)
 				if carta.has_method("show_entanglement_highlight"): carta.show_entanglement_highlight()
 				estado_efecto_actual = EfectoCuantico.SELECCIONAR_ENTRELAZADO_RIVAL
 				
@@ -354,11 +382,11 @@ func gestionar_input_efectos(carta: Carta):
 				limpiar_estado_cuantico(carta_seleccionada_efecto)
 				limpiar_estado_cuantico(carta)
 				
-				# enlace
+				# Enlace
 				carta_seleccionada_efecto.entrelazada_con = carta
 				carta.entrelazada_con = carta_seleccionada_efecto
 				
-				# visuales
+				# Visuales
 				carta.aplicar_efecto_visual_cuantico(Color.CYAN)
 				carta_seleccionada_efecto.aplicar_efecto_visual_cuantico(Color.CYAN)
 				
@@ -404,7 +432,6 @@ func pasar_a_turno_rival_cuantico():
 	await get_tree().create_timer(1.0).timeout
 	robar_carta_cuantica(false)
 
-# --- NOT ---
 func efecto_not_cuantico(es_jugador: bool):
 	var target_slots = slots_jugador if es_jugador else slots_rival
 	var candidatos = []
@@ -415,15 +442,19 @@ func efecto_not_cuantico(es_jugador: bool):
 	if candidatos.size() > 0:
 		var carta = candidatos.pick_random()
 		var poder_viejo = obtener_poder_carta(carta.value)
+		
 		var tween_hl = create_tween()
 		tween_hl.tween_property(carta, "modulate", Color(1, 0, 0), 0.3)
 		tween_hl.tween_property(carta, "modulate", Color.WHITE, 0.3)
 		await get_tree().create_timer(0.6).timeout
+		
 		var nuevo_poder = 16 - poder_viejo
 		var nuevo_valor_visual = 0
 		if nuevo_poder == 14: nuevo_valor_visual = 0 # As
 		else: nuevo_valor_visual = nuevo_poder - 1 
-				
+		
+		print("DEBUG NOT: ValorOriginal: %d (Poder %d) -> NuevoPoder: %d -> NuevoValorVisual: %d" % [carta.value, poder_viejo, nuevo_poder, nuevo_valor_visual])
+		
 		carta.value = nuevo_valor_visual
 		
 		var tween = create_tween()
@@ -461,6 +492,7 @@ func resolver_entrelazamiento(c):
 		pareja.value = c.value
 		pareja.suit = c.suit 
 		
+		# Animación al copiarse
 		var tween = create_tween()
 		tween.tween_property(pareja, "modulate", Color.CYAN, 0.2)
 		tween.tween_property(pareja, "modulate", Color.WHITE, 0.2)
@@ -484,9 +516,11 @@ func ia_efecto_entrelazado():
 		
 		if c1.has_method("show_entanglement_highlight"): c1.show_entanglement_highlight()
 		if c2.has_method("show_entanglement_highlight"): c2.show_entanglement_highlight()
+		print("IA Entrelazó cartas.")
 	else:
-		pass
-		
+		print("IA no pudo entrelazar (falta de cartas).")
+
+# IA - Corrección Superposición
 func ia_efecto_superposicion():
 	if slots_rival.size() > 0:
 		var peor_carta = obtener_peor_carta_ia()
@@ -503,8 +537,9 @@ func aplicar_superposicion(carta: Carta):
 	carta.es_superposicion = true
 	carta.opciones_superposicion = vals
 	carta.aplicar_efecto_visual_cuantico(Color.PURPLE)
+	print("IA aplicó superposición.")
 
-# --- FUNCIONES REVELATION ---
+# --- FUNCIONES NUEVAS REVELATION ---
 func aplicar_revelation_temporal(carta: Carta):
 	if not is_instance_valid(carta): return
 	mirando_carta = true
@@ -663,6 +698,7 @@ func calcular_puntos_mano(slots_dict):
 	var total = 0
 	for carta in slots_dict.values(): total += obtener_poder_carta(carta.value)
 	return total
+	
 
 # DEBUG
 func toggle_debug_vision():
