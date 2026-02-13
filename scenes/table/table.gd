@@ -158,7 +158,7 @@ func turno_rival_ia_jugar():
 
 func resolver_ronda():
 	await get_tree().create_timer(1.0).timeout
-	if fase_actual == Fase.GAME_OVER and ronda_actual > MIN_RONDAS: return
+	if fase_actual == Fase.GAME_OVER: return
 	
 	if carta_jugada_p1: 
 		carta_jugada_p1.face_up = false
@@ -172,7 +172,7 @@ func resolver_ronda():
 		carta_jugada_p2.flip_card()
 	
 	await get_tree().create_timer(2.0).timeout 
-	if fase_actual == Fase.GAME_OVER and ronda_actual > MIN_RONDAS: return
+	if fase_actual == Fase.GAME_OVER: return 
 	
 	gestionar_descarte(carta_jugada_p1, 1)
 	gestionar_descarte(carta_jugada_p2, 2)
@@ -221,7 +221,11 @@ func rellenar_manos_y_seguir():
 
 # --- INPUT CRÍTICO ---
 func _input(event):
-	if (fase_actual == Fase.GAME_OVER and ronda_actual > MIN_RONDAS) or fase_actual == Fase.ANIMACION: return
+	if fase_actual == Fase.GAME_OVER: 
+		return
+	
+	if fase_actual == Fase.ANIMACION:
+		return
 	
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
 		
@@ -361,6 +365,17 @@ func finalizar_fase_cuantica():
 	fase_actual = Fase.SELECCION
 	estado_efecto_actual = EfectoCuantico.NINGUNO
 	mirando_carta = false 
+	
+	if ronda_actual < MIN_RONDAS: return 
+	
+	fase_actual = Fase.GAME_OVER
+	carta_en_movimiento = null
+	carta_hovered = null
+	mirando_carta = false
+	
+	if boton_plantarse: boton_plantarse.disabled = true
+	
+	
 	
 func iniciar_efecto_entrelazado():
 	estado_efecto_actual = EfectoCuantico.SELECCIONAR_ENTRELAZADO_PROPIA
@@ -653,6 +668,7 @@ func animacion_ia_mirando():
 	mirando_carta = false
 
 func start_drag(c): 
+	if fase_actual == Fase.GAME_OVER: return
 	carta_en_movimiento = c
 	c.scale = c.base_scale * 1.2
 	c.z_index = 50 
@@ -678,12 +694,15 @@ func connect_card_signals(c):
 	if !c.is_connected("hovered_off", on_hovered_off_card): c.connect("hovered_off", on_hovered_off_card)
 
 func on_hovered_over_card(c): 
+	if fase_actual == Fase.GAME_OVER: return
+	
 	if fase_actual == Fase.SELECCION and !mirando_carta and !carta_en_movimiento: 
 		if carta_hovered != c:
 			hover.pitch_scale = randf_range(0.9, 1.2)
 			hover.play()
 		carta_hovered = c
 		highlight_card(c, true, 0)
+		
 func on_hovered_off_card(c): 
 	if !carta_en_movimiento: 
 		highlight_card(c, false, 0); var n = check_carta()
