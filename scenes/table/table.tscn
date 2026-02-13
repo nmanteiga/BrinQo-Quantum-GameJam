@@ -5,7 +5,6 @@
 [ext_resource type="Texture2D" uid="uid://c6d4ofta0awia" path="res://assets/background/table_v02.png" id="3_0y6hh"]
 [ext_resource type="Texture2D" uid="uid://6cx4d046o4eu" path="res://assets/cards/back/back_v10.png" id="4_gelyt"]
 [ext_resource type="Texture2D" uid="uid://dam45vabjw8dy" path="res://assets/cards/back/back_v05.png" id="5_gelyt"]
-[ext_resource type="Texture2D" uid="uid://07pj6mmqsn30" path="res://assets/buttons/stop.png" id="6_gelyt"]
 [ext_resource type="AudioStream" uid="uid://dci3fqlfqwkct" path="res://assets/sounds/normal_cards/play.mp3" id="7_6tgsi"]
 [ext_resource type="FontFile" uid="uid://bfu4fc1t3nsdj" path="res://assets/VT323/VT323-Regular.ttf" id="7_ctt8d"]
 [ext_resource type="AudioStream" uid="uid://d156es4c7pkne" path="res://assets/sounds/normal_cards/draw1.mp3" id="7_tg5vf"]
@@ -140,10 +139,12 @@ anchors_preset = -1
 anchor_left = 0.78000003
 anchor_right = 1.001
 anchor_bottom = 0.16800001
-offset_left = -0.60009766
-offset_top = -2.0
-offset_right = -0.92004395
-offset_bottom = -0.4400177
+offset_left = -44.600098
+offset_top = 38.0
+offset_right = -44.920044
+offset_bottom = 39.559982
+theme_override_fonts/font = ExtResource("7_ctt8d")
+theme_override_font_sizes/font_size = 32
 
 [node name="BotonPlantarse" type="Button" parent="CanvasLayer" unique_id=1968019780]
 anchors_preset = -1
@@ -155,7 +156,10 @@ offset_left = -0.6800537
 offset_top = -11.040039
 offset_right = 61.559937
 offset_bottom = -35.240112
-icon = ExtResource("6_gelyt")
+theme_override_fonts/font = ExtResource("7_ctt8d")
+theme_override_font_sizes/font_size = 40
+text = "END GAME
+"
 
 [node name="PanelGameOver" type="Panel" parent="CanvasLayer" unique_id=2028273790]
 anchors_preset = -1
