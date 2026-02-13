@@ -192,7 +192,10 @@ func gestionar_descarte(carta: Carta, id: int):
 
 func rellenar_manos_y_seguir():
 	if fase_actual == Fase.GAME_OVER and ronda_actual > MIN_RONDAS: return
-	if ronda_actual >= MAX_RONDAS: finalizar_partida(); return
+	if ronda_actual >= MAX_RONDAS: 
+		finalizar_partida()
+		return
+		
 	ronda_actual += 1
 	actualizar_ui_ronda()
 	
@@ -355,7 +358,21 @@ func iniciar_efecto_entrelazado():
 func iniciar_efecto_superposicion():
 	estado_efecto_actual = EfectoCuantico.SELECCIONAR_SUPERPOSICION
 
-
+func resolver_estados_pendientes():
+	var todas_las_cartas = slots_jugador.values() + slots_rival.values()
+	
+	for carta in todas_las_cartas:
+		if is_instance_valid(carta):
+			if carta.es_superposicion:
+				colapsar_superposicion(carta)
+				carta.update_visuals()
+			
+			if carta.entrelazada_con and is_instance_valid(carta.entrelazada_con):
+				resolver_entrelazamiento(carta)
+				# Forzamos actualización visual de la pareja también
+				if is_instance_valid(carta.entrelazada_con):
+					carta.entrelazada_con.update_visuals()
+					
 # --- LIMPIEZA DE ESTADOS ---
 func limpiar_estado_cuantico(carta: Carta):
 	limpiar_preview()
@@ -717,6 +734,7 @@ func actualizar_ui_ronda():
 
 func finalizar_partida():
 	if ronda_actual < MIN_RONDAS: return 
+	resolver_estados_pendientes()
 	fase_actual = Fase.GAME_OVER
 	carta_en_movimiento = null; mirando_carta = false; carta_hovered = null
 	
