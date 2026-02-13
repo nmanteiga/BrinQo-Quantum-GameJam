@@ -282,7 +282,7 @@ func robar_carta_cuantica(es_jugador: bool):
 		await tween.finished
 		
 		if fase_actual == Fase.GAME_OVER and ronda_actual > MIN_RONDAS: return
-		await get_tree().create_timer(3.0).timeout
+		await get_tree().create_timer(2.5).timeout
 		
 		var sprite_node = anim.sprite
 		var animated_node = anim.animated_quantum
@@ -295,21 +295,21 @@ func robar_carta_cuantica(es_jugador: bool):
 			# Disolver el sprite principal
 			tween_dissolve.tween_method(
 				func(val): sprite_node.material.set_shader_parameter("dissolve_value", val),
-				0.0, 1.0, 1.5
+				0.0, 1.0, 1.0
 			)
 			
 			# Disolver overlay animado
 			if animated_node and animated_node.visible and animated_node.material:
 				tween_dissolve.parallel().tween_method(
 					func(val): animated_node.material.set_shader_parameter("dissolve_value", val),
-					0.0, 1.0, 1.5
+					0.0, 1.0, 1.0
 				)
 			
 			# Disolver sombra
 			if shadow_node and shadow_node.visible and shadow_node.material:
 				tween_dissolve.parallel().tween_method(
 					func(val): shadow_node.material.set_shader_parameter("dissolve_value", val),
-					0.0, 1.0, 1.5
+					0.0, 1.0, 1.0
 				)
 			
 			await tween_dissolve.finished

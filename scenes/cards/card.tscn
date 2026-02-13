@@ -102,6 +102,12 @@ stream = SubResource("AudioStreamRandomizer_4tkg3")
 volume_db = -7.363
 bus = &"SFX"
 
+[node name="AudioStream(Flip2)" type="AudioStreamPlayer2D" parent="." unique_id=234000659]
+position = Vector2(-380, -536)
+stream = SubResource("AudioStreamRandomizer_4tkg3")
+volume_db = -7.363
+bus = &"SFX"
+
 [node name="AnimatedQuantum" type="TextureRect" parent="." unique_id=585958923]
 visible = false
 texture_filter = 6

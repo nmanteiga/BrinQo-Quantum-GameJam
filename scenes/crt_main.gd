@@ -25,9 +25,6 @@ func _ready():
 	
 	if manual_book.has_signal("on_close"):
 		manual_book.on_close.connect(_on_manual_closed)
-	
-	if music_player:
-		music_player.set_meta("was_playing", true)
 
 func _input(event):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:

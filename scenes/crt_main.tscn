@@ -3,8 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://6vvx8lbe4stq" path="res://scenes/table/table.tscn" id="1_o7dqw"]
 [ext_resource type="Shader" uid="uid://dyqkoyo5o4gvy" path="res://scenes/crt_main.gdshader" id="2_f5c1c"]
 [ext_resource type="Script" uid="uid://clbsdtf1s1g1q" path="res://scenes/crt_main.gd" id="3_crt_script"]
-[ext_resource type="AudioStream" uid="uid://upb8wui6c0tb" path="res://assets/sounds/music/QUARDS.mp3" id="4_music"]
-[ext_resource type="Script" uid="uid://5dn7nlgkos6b" path="res://scenes/help_overlay.gd" id="5_rk4pq"]
+[ext_resource type="Script" path="res://scenes/help_overlay.gd" id="5_rk4pq"]
 [ext_resource type="Texture2D" uid="uid://76vmw6vemyrr" path="res://assets/tutorial/1.png" id="6_gg7c6"]
 [ext_resource type="Texture2D" uid="uid://d3t3gw28pbys7" path="res://assets/tutorial/2.png" id="7_sdjmb"]
 [ext_resource type="Texture2D" uid="uid://dxjcf73mhnav7" path="res://assets/tutorial/3.png" id="8_1sr34"]
@@ -58,7 +57,7 @@ offset_top = 20.0
 offset_right = 140.0
 offset_bottom = 70.0
 theme_override_font_sizes/font_size = 24
-text = "Help"
+text = "Guide"
 
 [node name="HelpOverlay" type="Panel" parent="SubViewport/UILayer" unique_id=1351460865]
 process_mode = 3
