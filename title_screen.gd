@@ -8,6 +8,10 @@ extends Control
 @export var tutorial_button: Button
 @export var tutorial_panel: Control
 
+@onready var viewport = $ColorRect2/ViewportContainer/SubViewport
+
+var currently_hovered = null
+
 func _ready():
 	if start_button and start_panel:
 		setup_quantum_button(start_button, start_panel)
@@ -51,10 +55,16 @@ func _on_hover(pnl: Control, hovered: bool):
 		tween.tween_property(pnl, "scale", Vector2(1.0, 1.0), 0.15)
 
 func _on_start_button_pressed():
+	print("[title_screen] Start button pressed")
 	get_tree().change_scene_to_file("res://scenes/crt_main.tscn")
 
 func _on_exit_button_pressed():
+	print("[title_screen] Exit button pressed")
 	get_tree().quit()
 
 func _on_tutorial_button_pressed():
 	print("Tutorial clicado (Aún sin función)")
+
+func _input(event):
+	# Let the SubViewport and its Controls handle input locally
+	pass

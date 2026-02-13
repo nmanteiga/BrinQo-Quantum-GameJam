@@ -30,6 +30,12 @@ shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_efto4")
 shader_parameter/dissolve_value = 0.0
 shader_parameter/burn_size = 0.1
 shader_parameter/burn_color = Color(0.23921569, 0.2509804, 0.6039216, 1)
+shader_parameter/outline_enabled = false
+shader_parameter/outline_color = Color(0, 0.93333316, 1, 1)
+shader_parameter/outline_width = 10.0
+shader_parameter/outline_pattern = 2
+shader_parameter/outline_inside = true
+shader_parameter/outline_add_margins = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_shadow"]
 shader = ExtResource("2_shadow")
@@ -64,11 +70,11 @@ texture_filter = 6
 material = SubResource("ShaderMaterial_mo7yc")
 offset_left = -380.0
 offset_top = -536.0
-offset_right = 380.0
+offset_right = 384.0
 offset_bottom = 536.0
 texture = ExtResource("4_1q37b")
 expand_mode = 1
-stretch_mode = 4
+stretch_mode = 2
 
 [node name="Shadow" type="TextureRect" parent="." unique_id=868157819]
 modulate = Color(0, 0, 0, 1)
@@ -82,11 +88,11 @@ offset_right = 379.0
 offset_bottom = 632.0
 texture = ExtResource("4_1q37b")
 expand_mode = 1
-stretch_mode = 4
+stretch_mode = 5
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=609577973]
 visible = false
-position = Vector2(3, -6.5)
+position = Vector2(0, -4)
 shape = ExtResource("4_73nwn")
 one_way_collision_margin = 0.0
 
@@ -97,6 +103,7 @@ volume_db = -7.363
 bus = &"SFX"
 
 [node name="AnimatedQuantum" type="TextureRect" parent="." unique_id=585958923]
+visible = false
 texture_filter = 6
 material = SubResource("ShaderMaterial_mo7yc")
 offset_left = -380.0

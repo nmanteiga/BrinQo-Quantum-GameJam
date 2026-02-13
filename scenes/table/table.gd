@@ -17,6 +17,7 @@ extends Node2D
 # AUDIO
 @onready var audio: AudioStreamPlayer2D = $"AudioStream(Play)"
 @onready var hover: AudioStreamPlayer2D = $"AudioStream(Hover)"
+@onready var cuantico: AudioStreamPlayer2D = $"AudioStream(Cuantico)"
 
 # DEBUG
 @onready var boton_debug = $CanvasLayer/BotonDebug 
@@ -277,6 +278,7 @@ func robar_carta_cuantica(es_jugador: bool):
 		tween.tween_property(anim, "global_position", dest, 0.6).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 		var target_scale = Vector2(0.6, 0.6) if es_jugador else Vector2(0.3, 0.3)
 		tween.parallel().tween_property(anim, "scale", target_scale, 0.6)
+		cuantico.play()
 		await tween.finished
 		
 		if fase_actual == Fase.GAME_OVER and ronda_actual > MIN_RONDAS: return
@@ -625,18 +627,27 @@ func on_hovered_over_card(c):
 			hover.pitch_scale = randf_range(0.9, 1.2)
 			hover.play()
 		carta_hovered = c
-		highlight_card(c, true)
+		highlight_card(c, true, 0)
 func on_hovered_off_card(c): 
 	if !carta_en_movimiento: 
-		highlight_card(c, false); var n = check_carta()
-		if n and n is Carta: highlight_card(n, true)
+		highlight_card(c, false, 0); var n = check_carta()
+		if n and n is Carta: highlight_card(n, true, 0)
 		else: carta_hovered = null
 
-func highlight_card(c, h): 
+func highlight_card(c, h, i): 
 	if is_instance_valid(c) and c is Carta:
 		if c.z_index == 100: return
 		if c.z_index >= 20 and c.z_index <= 40: return
-		c.scale = c.base_scale * (1.2 if h else 1.0); c.z_index = 10 if h else 1
+		c.scale = c.base_scale * (1.2 if h else 1.0)
+		c.z_index = 10 if h else 1
+		
+		# Apply outline shader effect
+		if c.entrelazada_con != null :
+			if i == 0:
+				highlight_card(c.entrelazada_con, h, 1)
+			if c.sprite and c.sprite.material and c.sprite.material is ShaderMaterial:
+				c.sprite.material.set_shader_parameter("outline_enabled", h)
+				c.sprite.material.set_shader_parameter("outline_add_margins", h)
 
 func check_carta():
 	var space_state = get_world_2d().direct_space_state

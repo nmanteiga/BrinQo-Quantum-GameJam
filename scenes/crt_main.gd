@@ -5,7 +5,6 @@ extends Node2D
 @onready var help_overlay = $SubViewport/UILayer/HelpOverlay
 @onready var close_button = $SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/CloseButton
 @onready var table = $SubViewport/table
-@onready var music_player = $SubViewport/MusicPlayer
 @onready var turn_on_flash = $SubViewport/UILayer/TurnOnFlash
 @onready var black_bg = $SubViewport/UILayer/BlackBackground
 
@@ -25,8 +24,6 @@ func _ready():
 	
 	help_button.pressed.connect(_on_help_button_pressed)
 	close_button.pressed.connect(_on_close_button_pressed)
-	if music_player:
-		music_player.set_meta("was_playing", true)
 
 func _input(event):
 	if event.is_action_pressed("ui_cancel") and is_paused:
