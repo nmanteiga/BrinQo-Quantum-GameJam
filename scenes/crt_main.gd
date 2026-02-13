@@ -4,7 +4,6 @@ extends Node2D
 @onready var help_button = $SubViewport/UILayer/HelpButton
 @onready var manual_book = $SubViewport/UILayer/HelpOverlay
 @onready var table = $SubViewport/table
-@onready var music_player = $SubViewport/MusicPlayer
 @onready var turn_on_flash = $SubViewport/UILayer/TurnOnFlash
 @onready var black_bg = $SubViewport/UILayer/BlackBackground
 
@@ -26,9 +25,6 @@ func _ready():
 	
 	if manual_book.has_signal("on_close"):
 		manual_book.on_close.connect(_on_manual_closed)
-	
-	if music_player:
-		music_player.set_meta("was_playing", true)
 
 func _input(event):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
