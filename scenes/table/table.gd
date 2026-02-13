@@ -19,6 +19,7 @@ extends Node2D
 # AUDIO
 @onready var audio: AudioStreamPlayer2D = $"AudioStream(Play)"
 @onready var hover: AudioStreamPlayer2D = $"AudioStream(Hover)"
+@onready var cuantico: AudioStreamPlayer2D = $"AudioStream(Cuantico)"
 
 # DEBUG
 @onready var boton_debug = $CanvasLayer/BotonDebug 
@@ -287,10 +288,11 @@ func robar_carta_cuantica(es_jugador: bool):
 		tween.tween_property(anim, "global_position", dest, 0.6).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 		var target_scale = Vector2(0.6, 0.6) if es_jugador else Vector2(0.3, 0.3)
 		tween.parallel().tween_property(anim, "scale", target_scale, 0.6)
+		cuantico.play()
 		await tween.finished
 		
 		if fase_actual == Fase.GAME_OVER and ronda_actual > MIN_RONDAS: return
-		await get_tree().create_timer(3.0).timeout
+		await get_tree().create_timer(2.5).timeout
 		
 		var sprite_node = anim.sprite
 		var animated_node = anim.animated_quantum
@@ -303,21 +305,21 @@ func robar_carta_cuantica(es_jugador: bool):
 			# Disolver el sprite principal
 			tween_dissolve.tween_method(
 				func(val): sprite_node.material.set_shader_parameter("dissolve_value", val),
-				0.0, 1.0, 1.5
+				0.0, 1.0, 1.0
 			)
 			
 			# Disolver overlay animado
 			if animated_node and animated_node.visible and animated_node.material:
 				tween_dissolve.parallel().tween_method(
 					func(val): animated_node.material.set_shader_parameter("dissolve_value", val),
-					0.0, 1.0, 1.5
+					0.0, 1.0, 1.0
 				)
 			
 			# Disolver sombra
 			if shadow_node and shadow_node.visible and shadow_node.material:
 				tween_dissolve.parallel().tween_method(
 					func(val): shadow_node.material.set_shader_parameter("dissolve_value", val),
-					0.0, 1.0, 1.5
+					0.0, 1.0, 1.0
 				)
 			
 			await tween_dissolve.finished
@@ -419,19 +421,26 @@ func aplicar_superposicion_monton(lista_descartes: Array):
 	limpiar_preview()
 	
 	if carta_seleccionada_efecto:
-		var posibles_valores = []
+		var t = create_tween()
+		t.tween_property(carta_seleccionada_efecto, "position:y", pos_jugador.position.y, 0.2)
+		
+		var posibles_ids = [] 
+		
 		if lista_descartes.size() >= 2:
-			posibles_valores.append(lista_descartes[lista_descartes.size()-1].value)
-			posibles_valores.append(lista_descartes[lista_descartes.size()-2].value)
+			var c1 = lista_descartes[lista_descartes.size()-1]
+			var c2 = lista_descartes[lista_descartes.size()-2]
+			posibles_ids.append(c1.suit * 13 + c1.value)
+			posibles_ids.append(c2.suit * 13 + c2.value)
 		elif lista_descartes.size() == 1:
-			posibles_valores.append(lista_descartes[0].value)
-			posibles_valores.append(randi() % 13) 
+			var c1 = lista_descartes[0]
+			posibles_ids.append(c1.suit * 13 + c1.value)
+			posibles_ids.append(randi() % 52) 
 		else:
-			posibles_valores.append(randi() % 13)
-			posibles_valores.append(randi() % 13)
+			posibles_ids.append(randi() % 52)
+			posibles_ids.append(randi() % 52)
 			
 		carta_seleccionada_efecto.es_superposicion = true
-		carta_seleccionada_efecto.opciones_superposicion = posibles_valores
+		carta_seleccionada_efecto.opciones_superposicion = posibles_ids
 		
 		carta_seleccionada_efecto = null
 		estado_efecto_actual = EfectoCuantico.NINGUNO
@@ -444,29 +453,32 @@ func pasar_a_turno_rival_cuantico():
 
 func efecto_not_cuantico(es_jugador: bool):
 	var target_slots = slots_jugador if es_jugador else slots_rival
-	var candidatos = []
-	for c in target_slots.values():
-		if not c.es_superposicion and c.entrelazada_con == null:
-			candidatos.append(c)
+	var candidatos_not : Array = [] # <--- Declaramos la variable correctamente
 	
-	if candidatos.size() > 0:
-		var carta = candidatos.pick_random()
+	for c in target_slots.values():
+		# FILTRO: Solo cartas que NO tengan efectos ya aplicados
+		if not c.es_superposicion and c.entrelazada_con == null:
+			candidatos_not.append(c)
+	
+	if candidatos_not.size() > 0:
+		var carta = candidatos_not.pick_random()
 		var poder_viejo = obtener_poder_carta(carta.value)
 		
+		# Efecto visual de aviso (rojo)
 		var tween_hl = create_tween()
 		tween_hl.tween_property(carta, "modulate", Color(1, 0, 0), 0.3)
 		tween_hl.tween_property(carta, "modulate", Color.WHITE, 0.3)
 		await get_tree().create_timer(0.6).timeout
 		
-		var nuevo_poder = 16 - poder_viejo
+		# Lógica de inversión del valor
+		var nuevo_poder = 14 - (poder_viejo - 1) # Inversión simple 1->14, 14->1
 		var nuevo_valor_visual = 0
 		if nuevo_poder == 14: nuevo_valor_visual = 0 # As
 		else: nuevo_valor_visual = nuevo_poder - 1 
 		
-		print("DEBUG NOT: ValorOriginal: %d (Poder %d) -> NuevoPoder: %d -> NuevoValorVisual: %d" % [carta.value, poder_viejo, nuevo_poder, nuevo_valor_visual])
-		
 		carta.value = nuevo_valor_visual
 		
+		# Animación de transformación
 		var tween = create_tween()
 		tween.tween_property(carta, "scale", carta.base_scale * 1.3, 0.2)
 		tween.parallel().tween_property(carta, "modulate", Color.YELLOW, 0.2)
@@ -475,6 +487,7 @@ func efecto_not_cuantico(es_jugador: bool):
 		
 		if carta.face_up: carta.update_visuals()
 	else:
+		print("NOT: No hay cartas válidas (todas tienen efectos)")
 		await get_tree().create_timer(0.5).timeout
 
 func efecto_around_the_world():
@@ -488,9 +501,15 @@ func efecto_around_the_world():
 		colocar_carta(slots_rival[s], pos_rival, s)
 
 func colapsar_superposicion(c):
-	c.value = c.opciones_superposicion.pick_random()
-	c.es_superposicion = false; c.aplicar_efecto_visual_cuantico(Color.WHITE)
-
+	var id_elegido = c.opciones_superposicion.pick_random()
+	c.suit = int(id_elegido / 13)
+	c.value = id_elegido % 13
+	c.es_superposicion = false
+	c.aplicar_efecto_visual_cuantico(Color.WHITE)
+	
+	if c.has_method("update_visuals"):
+		c.update_visuals()
+		
 func resolver_entrelazamiento(c):
 	if not is_instance_valid(c): return
 
@@ -528,26 +547,38 @@ func ia_efecto_entrelazado():
 		if c2.has_method("show_entanglement_highlight"): c2.show_entanglement_highlight()
 		print("IA Entrelazó cartas.")
 	else:
-		print("IA no pudo entrelazar (falta de cartas).")
-
-# IA - Corrección Superposición
+		pass
 func ia_efecto_superposicion():
-	if slots_rival.size() > 0:
-		var peor_carta = obtener_peor_carta_ia()
-		if peor_carta:
-			aplicar_superposicion(peor_carta)
+	var candidatos_ia = []
+	for c in slots_rival.values():
+		if not c.es_superposicion and c.entrelazada_con == null:
+			candidatos_ia.append(c)
+			
+	if candidatos_ia.size() > 0:
+		var peor_carta = candidatos_ia[0]
+		var menor_poder = 999
+		for c in candidatos_ia:
+			var poder = obtener_poder_carta(c.value)
+			if poder < menor_poder:
+				menor_poder = poder
+				peor_carta = c
+		aplicar_superposicion(peor_carta)
 
 func aplicar_superposicion(carta: Carta):
-	limpiar_estado_cuantico(carta)
-	var vals = []
-	if descartes_p1.size() > 0: vals.append(descartes_p1.back().value)
-	if descartes_p2.size() > 0: vals.append(descartes_p2.back().value)
-	while vals.size() < 2: vals.append(randi() % 13)
+	var ids = []
+	if descartes_p1.size() > 0: 
+		var c = descartes_p1.back()
+		ids.append(c.suit * 13 + c.value)
+	if descartes_p2.size() > 0: 
+		var c = descartes_p2.back()
+		ids.append(c.suit * 13 + c.value)
+	
+	while ids.size() < 2: 
+		ids.append(randi() % 52)
 		
 	carta.es_superposicion = true
-	carta.opciones_superposicion = vals
+	carta.opciones_superposicion = ids 
 	carta.aplicar_efecto_visual_cuantico(Color.PURPLE)
-	print("IA aplicó superposición.")
 
 # --- FUNCIONES NUEVAS REVELATION ---
 func aplicar_revelation_temporal(carta: Carta):
@@ -635,18 +666,27 @@ func on_hovered_over_card(c):
 			hover.pitch_scale = randf_range(0.9, 1.2)
 			hover.play()
 		carta_hovered = c
-		highlight_card(c, true)
+		highlight_card(c, true, 0)
 func on_hovered_off_card(c): 
 	if !carta_en_movimiento: 
-		highlight_card(c, false); var n = check_carta()
-		if n and n is Carta: highlight_card(n, true)
+		highlight_card(c, false, 0); var n = check_carta()
+		if n and n is Carta: highlight_card(n, true, 0)
 		else: carta_hovered = null
 
-func highlight_card(c, h): 
+func highlight_card(c, h, i): 
 	if is_instance_valid(c) and c is Carta:
 		if c.z_index == 100: return
 		if c.z_index >= 20 and c.z_index <= 40: return
-		c.scale = c.base_scale * (1.2 if h else 1.0); c.z_index = 10 if h else 1
+		c.scale = c.base_scale * (1.2 if h else 1.0)
+		c.z_index = 10 if h else 1
+		
+		# Apply outline shader effect
+		if c.entrelazada_con != null :
+			if i == 0:
+				highlight_card(c.entrelazada_con, h, 1)
+			if c.sprite and c.sprite.material and c.sprite.material is ShaderMaterial:
+				c.sprite.material.set_shader_parameter("outline_enabled", h)
+				c.sprite.material.set_shader_parameter("outline_add_margins", h)
 
 func check_carta():
 	var space_state = get_world_2d().direct_space_state

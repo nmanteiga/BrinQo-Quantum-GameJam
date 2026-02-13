@@ -18,7 +18,7 @@ var controlled_by_player : int = 0
 var slot_index : int = 0
 
 # cuántica
-var entrelazada_con : Node2D = null 
+@export var entrelazada_con : Node2D = null 
 var opciones_superposicion : Array = [] 
 var es_superposicion : bool = false
 

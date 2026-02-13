@@ -2,10 +2,8 @@ extends Node2D
 
 @onready var viewport = $SubViewport
 @onready var help_button = $SubViewport/UILayer/HelpButton
-@onready var help_overlay = $SubViewport/UILayer/HelpOverlay
-@onready var close_button = $SubViewport/UILayer/HelpOverlay/MarginContainer/VBoxContainer/CloseButton
+@onready var manual_book = $SubViewport/UILayer/HelpOverlay
 @onready var table = $SubViewport/table
-@onready var music_player = $SubViewport/MusicPlayer
 @onready var turn_on_flash = $SubViewport/UILayer/TurnOnFlash
 @onready var black_bg = $SubViewport/UILayer/BlackBackground
 
@@ -19,20 +17,26 @@ func _ready():
 	var tween = create_tween()
 	tween.tween_property(turn_on_flash, "scale:x", 1.0, 0.15).set_ease(Tween.EASE_OUT)
 	tween.tween_property(turn_on_flash, "scale:y", 1.0, 0.2).set_ease(Tween.EASE_OUT)
-	tween.parallel().tween_callback(func(): black_bg.visible = false) # Quitamos lo negro justo cuando el blanco llena todo
-	tween.tween_property(turn_on_flash, "modulate:a", 0.0, 0.3) # El blanco se vuelve transparente
+	tween.parallel().tween_callback(func(): black_bg.visible = false)
+	tween.tween_property(turn_on_flash, "modulate:a", 0.0, 0.3)
 	tween.tween_callback(func(): turn_on_flash.visible = false)
 	
 	help_button.pressed.connect(_on_help_button_pressed)
-	close_button.pressed.connect(_on_close_button_pressed)
-	if music_player:
-		music_player.set_meta("was_playing", true)
+	
+	if manual_book.has_signal("on_close"):
+		manual_book.on_close.connect(_on_manual_closed)
 
 func _input(event):
-	if event.is_action_pressed("ui_cancel") and is_paused:
-		_on_close_button_pressed()
-		get_viewport().set_input_as_handled()
-		return
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		
+		if manual_book.visible:
+			if event.pressed:
+				print("CLICK ENVIADO AL MANUAL. Pausa: ", get_tree().paused)
+				viewport.push_input(event)
+			get_viewport().set_input_as_handled()
+	
+	if event is InputEventMouseButton or event is InputEventMouseMotion:
+		viewport.push_input(event)
 	
 	if event is InputEventMouseButton or event is InputEventMouseMotion:
 		viewport.push_input(event)
@@ -62,17 +66,19 @@ func _input(event):
 func _on_help_button_pressed():
 	show_help_overlay()
 
-func _on_close_button_pressed():
+func _on_manual_closed():
 	hide_help_overlay()
 
 func show_help_overlay():
-	help_overlay.visible = true
-	is_paused = true
-	var music_bus = AudioServer.get_bus_index("Music")
-	AudioServer.set_bus_volume_db(music_bus, -15.0)  # Quieter
+	if manual_book.has_method("iniciar_manual"):
+		manual_book.iniciar_manual()
 	
+	if table.has_node("CanvasLayer"):
+		table.get_node("CanvasLayer").visible = false
+		get_tree().paused = true 
+
 func hide_help_overlay():
-	help_overlay.visible = false
-	is_paused = false
-	var music_bus = AudioServer.get_bus_index("Music")
-	AudioServer.set_bus_volume_db(music_bus, 0.0)  # Normal volume
+	if table.has_node("CanvasLayer"):
+		table.get_node("CanvasLayer").visible = true
+	
+	get_tree().paused = false

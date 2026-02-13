@@ -12,6 +12,7 @@
 [ext_resource type="AudioStream" uid="uid://ddnn6gcp0kqp0" path="res://assets/sounds/normal_cards/draw2.mp3" id="9_gelyt"]
 [ext_resource type="AudioStream" uid="uid://cpwub8pu8qgdl" path="res://assets/sounds/normal_cards/draw4.mp3" id="10_6tgsi"]
 [ext_resource type="AudioStream" uid="uid://dbj48dvb85iir" path="res://assets/sounds/normal_cards/draw3.mp3" id="10_ctt8d"]
+[ext_resource type="AudioStream" uid="uid://n1ymxsdcuyav" path="res://assets/sounds/quantum_cards/quantum.mp3" id="12_ctt8d"]
 
 [sub_resource type="GDScript" id="GDScript_wpgb8"]
 script/source = "extends Node2D
@@ -209,6 +210,11 @@ bus = &"SFX"
 [node name="AudioStream(Hover)" type="AudioStreamPlayer2D" parent="." unique_id=1181603259]
 stream = ExtResource("7_6tgsi")
 volume_db = -11.044
+
+[node name="AudioStream(Cuantico)" type="AudioStreamPlayer2D" parent="." unique_id=1769037449]
+stream = ExtResource("12_ctt8d")
+volume_db = 7.849
+bus = &"SFX"
 
 [connection signal="input_event" from="mazoNormal" to="." method="_on_mazo_normal_input_event"]
 [connection signal="input_event" from="mazoEspecial" to="." method="_on_mazo_especial_input_event"]
