@@ -173,6 +173,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = 142.0
+offset_bottom = 142.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -191,17 +193,19 @@ alignment = 1
 
 [node name="BotonReinicio" type="Button" parent="CanvasLayer/PanelGameOver/ContenedorVertical/CajaBotones" unique_id=438024958]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("7_ctt8d")
 theme_override_font_sizes/font_size = 30
-text = "Play again"
+text = "   Play again   "
 
 [node name="BotonMenu" type="Button" parent="CanvasLayer/PanelGameOver/ContenedorVertical/CajaBotones" unique_id=1132335196]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("7_ctt8d")
 theme_override_font_sizes/font_size = 30
-text = "Main screen"
+text = "   Main screen   "
 
 [node name="AudioStream(Play)" type="AudioStreamPlayer2D" parent="." unique_id=919092400]
 stream = SubResource("AudioStreamRandomizer_gelyt")
