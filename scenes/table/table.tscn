@@ -129,6 +129,7 @@ shape = SubResource("RectangleShape2D_tg5vf")
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=807943530]
 
 [node name="BotonDebug" type="Button" parent="CanvasLayer" unique_id=291840358]
+visible = false
 offset_left = 1447.0
 offset_top = 753.0
 offset_right = 1647.0
