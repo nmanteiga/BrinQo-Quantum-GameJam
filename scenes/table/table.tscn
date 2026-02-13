@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://dam45vabjw8dy" path="res://assets/cards/back/back_v05.png" id="5_gelyt"]
 [ext_resource type="Texture2D" uid="uid://07pj6mmqsn30" path="res://assets/buttons/stop.png" id="6_gelyt"]
 [ext_resource type="AudioStream" uid="uid://dci3fqlfqwkct" path="res://assets/sounds/normal_cards/play.mp3" id="7_6tgsi"]
+[ext_resource type="FontFile" uid="uid://bfu4fc1t3nsdj" path="res://assets/VT323/VT323-Regular.ttf" id="7_ctt8d"]
 [ext_resource type="AudioStream" uid="uid://d156es4c7pkne" path="res://assets/sounds/normal_cards/draw1.mp3" id="7_tg5vf"]
 [ext_resource type="AudioStream" uid="uid://ddnn6gcp0kqp0" path="res://assets/sounds/normal_cards/draw2.mp3" id="9_gelyt"]
 [ext_resource type="AudioStream" uid="uid://cpwub8pu8qgdl" path="res://assets/sounds/normal_cards/draw4.mp3" id="10_6tgsi"]
@@ -27,6 +28,19 @@ size = Vector2(232.5, 312)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tg5vf"]
 size = Vector2(238, 311)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gelyt"]
+bg_color = Color(0, 0, 0, 0.8)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.18039216, 0.8, 0.44313726, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_size = 10
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_gelyt"]
 streams_count = 4
@@ -151,17 +165,42 @@ offset_left = -47.04004
 offset_top = 41.399994
 offset_right = -46.200073
 offset_bottom = 41.43994
+theme_override_styles/panel = SubResource("StyleBoxFlat_gelyt")
 
-[node name="LabelResultado" type="Label" parent="CanvasLayer/PanelGameOver" unique_id=1224346142]
+[node name="ContenedorVertical" type="VBoxContainer" parent="CanvasLayer/PanelGameOver" unique_id=1659165917]
 layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.845
-anchor_right = 0.998
-anchor_bottom = 1.0270001
-offset_left = 57.0
-offset_top = -343.84003
-offset_right = -61.797974
-offset_bottom = -343.6681
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LabelResultado" type="RichTextLabel" parent="CanvasLayer/PanelGameOver/ContenedorVertical" unique_id=910668072]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("7_ctt8d")
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+horizontal_alignment = 1
+
+[node name="CajaBotones" type="HBoxContainer" parent="CanvasLayer/PanelGameOver/ContenedorVertical" unique_id=1174946871]
+layout_mode = 2
+alignment = 1
+
+[node name="BotonReinicio" type="Button" parent="CanvasLayer/PanelGameOver/ContenedorVertical/CajaBotones" unique_id=438024958]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_fonts/font = ExtResource("7_ctt8d")
+theme_override_font_sizes/font_size = 30
+text = "Play again"
+
+[node name="BotonMenu" type="Button" parent="CanvasLayer/PanelGameOver/ContenedorVertical/CajaBotones" unique_id=1132335196]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_fonts/font = ExtResource("7_ctt8d")
+theme_override_font_sizes/font_size = 30
+text = "Main screen"
 
 [node name="AudioStream(Play)" type="AudioStreamPlayer2D" parent="." unique_id=919092400]
 stream = SubResource("AudioStreamRandomizer_gelyt")

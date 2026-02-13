@@ -13,7 +13,9 @@ extends Node2D
 @onready var label_ronda = $CanvasLayer/LabelRonda
 @onready var boton_plantarse = $CanvasLayer/BotonPlantarse
 @onready var panel_game_over = $CanvasLayer/PanelGameOver
-@onready var label_resultado = $CanvasLayer/PanelGameOver/LabelResultado
+@onready var label_resultado = $CanvasLayer/PanelGameOver/ContenedorVertical/LabelResultado
+@onready var boton_reinicio = %BotonReinicio
+@onready var boton_menu = %BotonMenu
 # AUDIO
 @onready var audio: AudioStreamPlayer2D = $"AudioStream(Play)"
 @onready var hover: AudioStreamPlayer2D = $"AudioStream(Hover)"
@@ -50,9 +52,17 @@ func _ready():
 	await get_tree().process_frame
 	randomize()
 	screen_size = get_viewport_rect().size
-	if panel_game_over: panel_game_over.visible = false
+	
+	if panel_game_over: 
+		panel_game_over.visible = false
+		panel_game_over.scale = Vector2(0, 0)
+		panel_game_over.pivot_offset = panel_game_over.size / 2
 	if boton_plantarse: boton_plantarse.pressed.connect(finalizar_partida)
 	if boton_debug: boton_debug.pressed.connect(toggle_debug_vision)
+	
+	if boton_reinicio: boton_reinicio.pressed.connect(_on_reinicio_pressed)
+	if boton_menu: boton_menu.pressed.connect(_on_menu_pressed)
+	
 	crear_mazo()
 	repartir_mano_inicial()
 	actualizar_ui_ronda()
@@ -687,12 +697,33 @@ func finalizar_partida():
 	for c in slots_jugador.values(): c.face_up = true; c.update_visuals()
 	for c in slots_rival.values(): c.face_up = true; c.update_visuals()
 	
-	var p1 = calcular_puntos_mano(slots_jugador); var p2 = calcular_puntos_mano(slots_rival)
-	var txt = "¡HAS GANADO!\n" if p1 > p2 else ("¡HAS PERDIDO!\n" if p2 > p1 else "¡EMPATE!\n")
-	txt += "Tus puntos: " + str(p1) + "\nRival: " + str(p2)
-	if label_resultado: label_resultado.text = txt
-	if panel_game_over: panel_game_over.visible = true
+	#var p1 = calcular_puntos_mano(slots_jugador); var p2 = calcular_puntos_mano(slots_rival)
+	#var txt = "¡HAS GANADO!\n" if p1 > p2 else ("¡HAS PERDIDO!\n" if p2 > p1 else "¡EMPATE!\n")
+	#txt += "Tus puntos: " + str(p1) + "\nRival: " + str(p2)
+	#if label_resultado: label_resultado.text = txt
+	#if panel_game_over: panel_game_over.visible = true
+	#if boton_plantarse: boton_plantarse.visible = false
+	var p1 = calcular_puntos_mano(slots_jugador)
+	var p2 = calcular_puntos_mano(slots_rival)
+	var txt = "[center]"
+	
+	if p1 > p2:
+		txt += "[color=#2ecc71][wave amp=50 freq=2]OPTIMAL TIMELINE![/wave][/color]\nYou win\n\n"
+	elif p2 > p1:
+		txt += "[color=#ff3333][shake rate=30 level=15]WAVEFUNCTION COLLAPSED[/shake][/color]\nYou lose\n\n"
+	else:
+		txt += "[color=#b666ff][wave amp=60 freq=5]SUPERPOSITION![/wave][/color]\nQuantum Draw\n\n"
+		
+	txt += "Your score: " + str(p1) + "\nRival: " + str(p2) + "[/center]"
+	
+	if label_resultado: 
+		label_resultado.text = txt
+		
 	if boton_plantarse: boton_plantarse.visible = false
+	if panel_game_over:
+		panel_game_over.visible = true
+		var tween = create_tween().set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		tween.tween_property(panel_game_over, "scale", Vector2(1.0, 1.0), 0.5)
 	
 func calcular_puntos_mano(slots_dict):
 	var total = 0
@@ -747,3 +778,10 @@ func limpiar_preview():
 	for c in cartas_preview: if is_instance_valid(c): c.queue_free()
 	cartas_preview.clear()
 	monton_hover_actual = 0
+
+
+func _on_reinicio_pressed():
+	get_tree().reload_current_scene()
+
+func _on_menu_pressed():
+	get_tree().change_scene_to_file("res://scenes/menu/title_screen.tscn")
