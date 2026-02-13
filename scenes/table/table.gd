@@ -787,7 +787,7 @@ func finalizar_partida():
 	if p1 > p2:
 		txt += "[color=#2ecc71][wave amp=50 freq=2]OPTIMAL TIMELINE![/wave][/color]\nYou win\n\n"
 	elif p2 > p1:
-		txt += "[color=#ff3333][shake rate=30 level=15]WAVEFUNCTION COLLAPSED[/shake][/color]\nYou lose\n\n"
+		txt += "[color=#ff3333][shake rate=30 level=15]WAVEFUNCTION COLLAPSED[/shake][/color]\nYou lost\n\n"
 	else:
 		txt += "[color=#b666ff][wave amp=60 freq=5]SUPERPOSITION![/wave][/color]\nQuantum Draw\n\n"
 		

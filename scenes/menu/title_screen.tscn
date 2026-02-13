@@ -58,7 +58,7 @@ shader_parameter/border_color = Color(1, 1, 1, 0.8)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ib7db"]
 
-[node name="TitleScreen" type="Control" unique_id=1593408701]
+[node name="TitleScreen" type="Control" unique_id=1593408701 node_paths=PackedStringArray("start_button", "start_panel", "exit_button", "exit_panel")]
 custom_minimum_size = Vector2(1920, 1080)
 layout_mode = 3
 anchors_preset = 15
@@ -72,6 +72,10 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_dc4i4")
 script = ExtResource("4_title_script")
+start_button = NodePath("StartButtonPanel/StartButton")
+start_panel = NodePath("StartButtonPanel")
+exit_button = NodePath("ExitButtonPanel/ExitButton")
+exit_panel = NodePath("ExitButtonPanel")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=181645343]
 z_index = -1
